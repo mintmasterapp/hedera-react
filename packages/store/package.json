@@ -3,7 +3,7 @@
   "keywords": [
     "hedera-react"
   ],
-  "version": "0.0.2",
+  "version": "0.0.4",
   "author": "Nasim Akhtar <devnasim18@gmail.com>",
   "license": "GPL-3.0-or-later",
   "repository": "github:mintmasterapp/hedera-react",
@@ -19,12 +19,12 @@
   "exports": "./dist/index.js",
   "scripts": {
     "prebuild": "rm -rf dist",
-    "build": "tsc",
+    "build": "npx tsc",
     "start": "tsc --watch"
   },
   "dependencies": {
     "@hashgraph/sdk": "^2.18.5",
-    "@hedera-react/types": "^0.0.2",
+    "@hedera-react/types": "^0.0.4",
     "zustand": "^4.1.3"
   }
 }
