@@ -3,6 +3,7 @@
   "keywords": [
     "hedera-react"
   ],
+  "version": "v0.0.2-alpha.0",
   "author": "Nasim Akhtar <devnasim18@gmail.com>",
   "license": "GPL-3.0-or-later",
   "repository": "github:mintmasterapp/hedera-react",
