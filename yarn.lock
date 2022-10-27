@@ -956,7 +956,7 @@
 
 "@hedera-react/types@file:/Users/nasimakhtar/Projects/mintmasterlabs/hedera-react/packages/types":
   "resolved" "file:packages/types"
-  "version" "0.0.0"
+  "version" "0.0.1-alpha.0"
   dependencies:
     "react" "^18.2.0"
     "tiny-invariant" "^1.3.1"
