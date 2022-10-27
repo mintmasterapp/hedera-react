@@ -79,10 +79,10 @@
     protobufjs "^6.11.3"
     utf8 "^3.0.0"
 
-"@hedera-react/types@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@hedera-react/types/-/types-0.0.2.tgz#b6936d37bb7a43f3d7e36708bc3ae0e91ce7fdae"
-  integrity sha512-Sq831R4KZMAIPCQmDAMW2jJZgzK6rQdsbMWRiQ3KzPL64xvu9uGL6KQImEn/IrpTvanmLh1p/MwQ0VHacRuI9Q==
+"@hedera-react/types@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@hedera-react/types/-/types-0.0.4.tgz#8b31b05550fa3eead3096f77b2c545abc8dafcef"
+  integrity sha512-ZysrZwopNym1Y110GEsBB0gUMessepJjBeF3aqQTWbWQwKU/2suKo6DmMw23kVMMGzuoCJjph6wSV3SLlNZ4gA==
   dependencies:
     zustand "^4.1.3"
 
