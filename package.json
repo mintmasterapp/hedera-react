@@ -1,0 +1,19 @@
+{
+  "name": "hedera-react",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "bootstrap": "npx lerna bootstrap",
+    "publish:lerna": "npx lerna publish",
+    "clean": "npx lerna clean --yes && lerna exec -- rimraf yarn.lock dist/ .rts2_cache_{cjs,esm}/",
+    "build": "npx lerna run build",
+    "start": "npx lerna run --parallel --no-bail start -- --noClean",
+    "lint": "npx lerna run lint --parallel",
+    "test": "npx lerna run test --parallel"
+  },
+  "devDependencies": {
+    "lerna": "^6.0.1",
+    "typescript": "^4.8.4"
+  }
+}
