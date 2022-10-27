@@ -1,32 +1,27 @@
 {
   "name": "@hedera-react/types",
+  "keywords": [
+    "hedera-react"
+  ],
+  "author": "Nasim Akhtar <devnasim18@gmail.com>",
+  "license": "GPL-3.0-or-later",
+  "repository": "github:mintmasterapp/hedera-react",
   "publishConfig": {
     "access": "public"
   },
-  "version": "0.0.2-alpha.0",
-  "description": "A simple, maximally extensible, dependency minimized framework for building modern Hedera dApps",
-  "author": "Nasim Akhtar <devnasim18@gmail.com>",
-  "homepage": "",
-  "license": "GPL-3.0-or-later",
-  "main": "dist/index.js",
-  "module": "dist/types.esm.js",
-  "typings": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist/*"
   ],
-  "dependencies": {
-    "react": "^18.2.0",
-    "tiny-invariant": "^1.3.1",
-    "tiny-warning": "^1.0.3"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mintmasterapp/hedera-react.git"
-  },
+  "type": "commonjs",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "exports": "./dist/index.js",
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "lint": "tsdx lint src"
+    "prebuild": "rm -rf dist",
+    "build": "tsc",
+    "start": "tsc --watch"
   },
-  "gitHead": "8474b2e1208da1593d46ee206d6105ed230e820b"
+  "dependencies": {
+    "zustand": "^4.1.3"
+  }
 }
