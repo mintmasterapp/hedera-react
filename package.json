@@ -1,5 +1,6 @@
 {
   "name": "hedera-react",
+  "private": false,
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -15,5 +16,11 @@
   "devDependencies": {
     "lerna": "^6.0.1",
     "typescript": "^4.8.4"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "tsdx": "^0.14.1"
   }
 }
