@@ -12,7 +12,7 @@ function parseChainId(chainId: string | number) {
   return typeof chainId === "string" ? Number.parseInt(chainId) : chainId;
 }
 
-type MockWalletConnectProvider = WalletConnectProvider & EventEmitter;
+type MockFlashWalletProvider = WalletConnectProvider & EventEmitter;
 
 type WalletConnectOptions = Omit<
   IWCEthRpcConnectionOptions,
@@ -34,8 +34,8 @@ export interface ActivateOptions {
   onlyIfAlreadyConnected?: boolean;
 }
 
-export class WalletConnect extends Connector {
-  public provider?: MockWalletConnectProvider;
+export class FlashWallet extends Connector {
+  public provider?: MockFlashWalletProvider;
   public readonly events = new EventEmitter3();
 
   private readonly options: Omit<WalletConnectOptions, "rpc">;
@@ -118,7 +118,7 @@ export class WalletConnect extends Connector {
         ...this.options,
         chainId,
         rpc: await rpc,
-      }) as unknown as MockWalletConnectProvider;
+      }) as unknown as MockFlashWalletProvider;
 
       this.provider.on("disconnect", this.disconnectListener);
       this.provider.on("chainChanged", this.chainChangedListener);

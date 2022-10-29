@@ -9,7 +9,7 @@ _A simple, maximally extensible, dependency minimized framework for building mod
 | `@hedera-react/core`
 
 | 🔌 **Connectors**
-`@hedera-react/flash-connector`
+`@hedera-react/flash`
 
 ## Local Development
 
