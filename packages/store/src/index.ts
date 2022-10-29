@@ -7,7 +7,7 @@ import {
 import { AccountId } from "@hashgraph/sdk";
 import { createStore } from "zustand";
 
-export const MAX_SAFE_CHAIN_ID = 4503599627370476;
+export const MAX_SAFE_CHAIN_ID = 2;
 
 function validateChainId(chainId: number): void {
   if (
@@ -20,7 +20,7 @@ function validateChainId(chainId: number): void {
 }
 
 function validateAccount(account: string): string {
-  return AccountId.fromString(account).toSolidityAddress();
+  return AccountId.fromSolidityAddress(account).toSolidityAddress();
 }
 
 const DEFAULT_STATE = {

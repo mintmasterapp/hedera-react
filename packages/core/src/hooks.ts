@@ -237,7 +237,8 @@ function getStateHooks(useConnector: UseBoundStore<HederaReactStore>) {
   }
 
   function useAccounts(): HederaReactState["accounts"] {
-    return useConnector(ACCOUNTS, ACCOUNTS_EQUALITY_CHECKER);
+    const accounts = useConnector(ACCOUNTS);
+    return accounts?.map((item) => `0x${item}`);
   }
 
   function useIsActivating(): HederaReactState["activating"] {
@@ -282,7 +283,7 @@ function getAugmentedHooks<T extends Connector>(
     const isActive = useIsActive();
     const chainId = useChainId();
 
-    // ensure that Provider is going to be available when loaded if @ethersproject/providers is installed
+    // ensure that Provider is going to be available when loaded if @hethers/providers is installed
     const [loaded, setLoaded] = useState(DynamicProvider !== undefined);
     useEffect(() => {
       if (loaded) return;
