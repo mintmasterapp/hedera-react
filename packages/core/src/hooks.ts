@@ -1,4 +1,3 @@
-import type { hethers } from "@hashgraph/hethers";
 import { createHederaReactStoreAndActions } from "@hedera-react/store";
 import type {
   Actions,
@@ -6,24 +5,9 @@ import type {
   HederaReactStore,
   HederaReactState,
 } from "@hedera-react/types";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import type { UseBoundStore } from "zustand";
 import create from "zustand";
-
-let DynamicProvider: hethers.providers.Provider | null | undefined;
-
-async function importProvider(): Promise<void> {
-  if (DynamicProvider === undefined) {
-    try {
-      const { getDefaultProvider } = await import("@hashgraph/hethers");
-
-      DynamicProvider = getDefaultProvider();
-    } catch {
-      console.debug("@hashgraph/hethers not available");
-      DynamicProvider = null;
-    }
-  }
-}
 
 export type HederaReactHooks = ReturnType<typeof getStateHooks> &
   ReturnType<typeof getDerivedHooks> &
@@ -119,16 +103,11 @@ export function getSelectedConnector(
     return values[getIndex(connector)];
   }
 
-  function useSelectedProvider<
-    T extends hethers.providers.BaseProvider = hethers.providers.HederaProvider
-  >(
-    connector: Connector,
-    network?: hethers.providers.Networkish
-  ): T | undefined {
+  function useSelectedProvider<T>(connector: Connector): T | undefined {
     const index = getIndex(connector);
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const values = initializedConnectors.map(([, { useProvider }], i) =>
-      useProvider<T>(network, i === index)
+      useProvider<T>()
     );
     return values[index];
   }
@@ -192,10 +171,8 @@ export function getPriorityConnector(
     return useSelectedIsActive(usePriorityConnector());
   }
 
-  function usePriorityProvider<
-    T extends hethers.providers.BaseProvider = hethers.providers.HederaProvider
-  >(network?: hethers.providers.Networkish) {
-    return useSelectedProvider<T>(usePriorityConnector(), network);
+  function usePriorityProvider<T>() {
+    return useSelectedProvider<T>(usePriorityConnector());
   }
 
   return {
@@ -237,8 +214,7 @@ function getStateHooks(useConnector: UseBoundStore<HederaReactStore>) {
   }
 
   function useAccounts(): HederaReactState["accounts"] {
-    const accounts = useConnector(ACCOUNTS);
-    return accounts?.map((item) => `0x${item}`);
+    return useConnector(ACCOUNTS, ACCOUNTS_EQUALITY_CHECKER);
   }
 
   function useIsActivating(): HederaReactState["activating"] {
@@ -277,35 +253,13 @@ function getAugmentedHooks<T extends Connector>(
   { useChainId }: ReturnType<typeof getStateHooks>,
   { useIsActive }: ReturnType<typeof getDerivedHooks>
 ) {
-  function useProvider<
-    T extends hethers.providers.BaseProvider = hethers.providers.HederaProvider
-  >(network?: hethers.providers.Networkish, enabled = true): T | undefined {
+  function useProvider<T>(): T | undefined {
     const isActive = useIsActive();
     const chainId = useChainId();
 
-    // ensure that Provider is going to be available when loaded if @hethers/providers is installed
-    const [loaded, setLoaded] = useState(DynamicProvider !== undefined);
-    useEffect(() => {
-      if (loaded) return;
-      let stale = false;
-      void importProvider().then(() => {
-        if (stale) return;
-        setLoaded(true);
-      });
-      return () => {
-        stale = true;
-      };
-    }, [loaded]);
-
     return useMemo(() => {
-      // to ensure connectors remain fresh, we condition re-renders on loaded, isActive and chainId
-      void loaded && isActive && chainId;
-      if (enabled) {
-        if (connector.customProvider) return connector.customProvider as T;
-        else if (DynamicProvider && connector.provider)
-          return connector.provider as unknown as T;
-      }
-    }, [loaded, enabled, isActive, chainId, network]);
+      return connector.provider as unknown as T;
+    }, [isActive, chainId]);
   }
 
   return { useProvider };

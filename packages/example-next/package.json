@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@hedera-react/core": "^0.0.5",
-    "@hedera-react/flash": "^0.0.1",
+    "@hedera-react/core": "^0.0.9",
+    "@hedera-react/store": "^0.0.7",
+    "@hedera-react/types": "^0.0.4",
+    "@walletconnect/ethereum-provider": "^1.7.5",
     "next": "13.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0"

@@ -1,13 +1,10 @@
-import type { hethers } from "@hashgraph/hethers";
 import type { Connector, HederaReactStore } from "@hedera-react/types";
 import type { Context, MutableRefObject, ReactNode } from "react";
 import React, { createContext, useContext, useRef } from "react";
 import type { HederaReactHooks, HederaReactPriorityHooks } from "./hooks";
 import { getPriorityConnector } from "./hooks";
 
-export type HederaContextType<
-  T extends hethers.providers.BaseProvider = hethers.providers.HederaProvider
-> = {
+export type HederaContextType<T = any> = {
   connector: Connector;
   chainId: ReturnType<HederaReactPriorityHooks["useSelectedChainId"]>;
   accounts: ReturnType<HederaReactPriorityHooks["useSelectedAccounts"]>;
@@ -26,14 +23,12 @@ export interface HederaReactProviderProps {
     | [Connector, HederaReactHooks][]
     | [Connector, HederaReactHooks, HederaReactStore][];
   connectorOverride?: Connector;
-  network?: hethers.providers.Networkish;
 }
 
 export function HederaReactProvider({
   children,
   connectors,
   connectorOverride,
-  network,
 }: HederaReactProviderProps) {
   const cachedConnectors: MutableRefObject<
     HederaReactProviderProps["connectors"]
@@ -70,7 +65,7 @@ export function HederaReactProvider({
   const account = useSelectedAccount(connector);
   const isActive = useSelectedIsActive(connector);
 
-  const provider = useSelectedProvider(connector, network);
+  const provider = useSelectedProvider(connector);
 
   return (
     <HederaContext.Provider
@@ -90,9 +85,7 @@ export function HederaReactProvider({
   );
 }
 
-export function useWeb3React<
-  T extends hethers.providers.BaseProvider = hethers.providers.HederaProvider
->(): HederaContextType<T> {
+export function useWeb3React<T>(): HederaContextType<T> {
   const context = useContext(
     HederaContext as Context<HederaContextType<T> | undefined>
   );

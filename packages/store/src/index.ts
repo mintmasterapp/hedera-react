@@ -4,7 +4,6 @@ import {
   HederaReactStore,
   HederaReactStateUpdate,
 } from "@hedera-react/types";
-import { AccountId } from "@hashgraph/sdk";
 import { createStore } from "zustand";
 
 export const MAX_SAFE_CHAIN_ID = 2;
@@ -20,7 +19,8 @@ function validateChainId(chainId: number): void {
 }
 
 function validateAccount(account: string): string {
-  return AccountId.fromSolidityAddress(account).toSolidityAddress();
+  // FIXME: Validate Account
+  return account;
 }
 
 const DEFAULT_STATE = {

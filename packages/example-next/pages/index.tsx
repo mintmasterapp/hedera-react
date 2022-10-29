@@ -1,22 +1,37 @@
 import Head from "next/head";
-import { hooks, walletConnect } from "../connectors/flashWallet";
-const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider } =
-  hooks;
+import { Connector, Actions } from "@hedera-react/types";
+import { initializeConnector } from "@hedera-react/core";
+
+export interface WalletConnectConstructorArgs {
+  actions: Actions;
+}
+
+export class Empty extends Connector {
+  provider: undefined;
+  constructor({ actions }: WalletConnectConstructorArgs) {
+    super(actions);
+    console.log(this.actions);
+  }
+  public updateChainId() {
+    this.actions.update({ chainId: 2 });
+  }
+  public activate() {
+    void 0;
+  }
+}
 
 export default function Home() {
-  // const chainId = useChainId();
-  // const accounts = useAccounts();
-  // const isActivating = useIsActivating();
+  const [connector, hooks] = initializeConnector(
+    (actions) => new Empty({ actions })
+  );
+  const chainId = hooks.useChainId();
 
-  // const isActive = useIsActive();
-
-  // const provider = useProvider();
-  // console.log(chainId, accounts, isActivating, isActive, provider);
-  console.log(hooks);
+  console.log(chainId);
 
   return (
     <div>
       <h1 className="text-3xl font-bold underline">Hello world!</h1>
+      <button onClick={() => connector.updateChainId()}>Change</button>
     </div>
   );
 }
