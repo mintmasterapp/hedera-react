@@ -9,7 +9,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "0.0.5",
+  "version": "0.0.6",
   "files": [
     "dist/*"
   ],
@@ -19,11 +19,10 @@
   "exports": "./dist/index.js",
   "scripts": {
     "prebuild": "rm -rf dist",
-    "build": "tsc",
+    "build": "npx tsc",
     "start": "tsc --watch"
   },
   "dependencies": {
-    "@hashgraph/hethers": "^1.2.2",
     "@hedera-react/store": "^0.0.5",
     "@hedera-react/types": "^0.0.4",
     "zustand": "^4.1.3"
