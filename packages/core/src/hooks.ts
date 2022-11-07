@@ -13,6 +13,8 @@ export type HederaReactHooks = ReturnType<typeof getStateHooks> &
   ReturnType<typeof getDerivedHooks> &
   ReturnType<typeof getAugmentedHooks>;
 
+export type HederaReactPriorityHooks = ReturnType<typeof getPriorityConnector>;
+
 export function initializeConnector<T extends Connector>(
   f: (actions: Actions) => T
 ): [T, HederaReactHooks, HederaReactStore] {
@@ -99,15 +101,158 @@ function getAugmentedHooks<T extends Connector>(
   { useChainId }: ReturnType<typeof getStateHooks>,
   { useIsActive }: ReturnType<typeof getDerivedHooks>
 ) {
-  function useProvider<T>(): T | undefined {
+  function useProvider<T>(enable: boolean): T | undefined {
     const isActive = useIsActive();
     const chainId = useChainId();
 
     return useMemo(() => {
-      void isActive && chainId;
+      void enable && isActive && chainId;
       return connector.provider as unknown as T;
     }, [isActive, chainId]);
   }
 
   return { useProvider };
+}
+
+export function getSelectedConnector(
+  ...initializedConnectors:
+    | [Connector, HederaReactHooks][]
+    | [Connector, HederaReactHooks, HederaReactStore][]
+) {
+  function getIndex(connector: Connector) {
+    const index = initializedConnectors.findIndex(
+      ([initializedConnector]) => connector === initializedConnector
+    );
+    if (index === -1) throw new Error("Connector not found");
+    return index;
+  }
+
+  function useSelectedStore(connector: Connector) {
+    const store = initializedConnectors[getIndex(connector)][2];
+    if (!store) throw new Error("Stores not passed");
+    return store;
+  }
+
+  function useSelectedChainId(connector: Connector) {
+    const values = initializedConnectors.map(([, { useChainId }]) =>
+      useChainId()
+    );
+    return values[getIndex(connector)];
+  }
+
+  function useSelectedAccounts(connector: Connector) {
+    const values = initializedConnectors.map(([, { useAccounts }]) =>
+      useAccounts()
+    );
+    return values[getIndex(connector)];
+  }
+
+  function useSelectedIsActivating(connector: Connector) {
+    const values = initializedConnectors.map(([, { useIsActivating }]) =>
+      useIsActivating()
+    );
+    return values[getIndex(connector)];
+  }
+
+  function useSelectedAccount(connector: Connector) {
+    const values = initializedConnectors.map(([, { useAccount }]) =>
+      useAccount()
+    );
+    return values[getIndex(connector)];
+  }
+
+  function useSelectedIsActive(connector: Connector) {
+    const values = initializedConnectors.map(([, { useIsActive }]) =>
+      useIsActive()
+    );
+    return values[getIndex(connector)];
+  }
+
+  function useSelectedProvider<T>(connector: Connector): T | undefined {
+    const index = getIndex(connector);
+    const values = initializedConnectors.map(([, { useProvider }], i) =>
+      useProvider<T>(index === i)
+    );
+    return values[index];
+  }
+
+  return {
+    useSelectedStore,
+    useSelectedChainId,
+    useSelectedAccounts,
+    useSelectedIsActivating,
+    useSelectedAccount,
+    useSelectedIsActive,
+    useSelectedProvider,
+  };
+}
+
+export function getPriorityConnector(
+  ...initializedConnectors:
+    | [Connector, HederaReactHooks][]
+    | [Connector, HederaReactHooks, HederaReactStore][]
+) {
+  const {
+    useSelectedStore,
+    useSelectedChainId,
+    useSelectedAccounts,
+    useSelectedIsActivating,
+    useSelectedAccount,
+    useSelectedIsActive,
+    useSelectedProvider,
+  } = getSelectedConnector(...initializedConnectors);
+
+  function usePriorityConnector() {
+    const values = initializedConnectors.map(([, { useIsActive }]) =>
+      useIsActive()
+    );
+    const index = values.findIndex((isActive) => isActive);
+    return initializedConnectors[index === -1 ? 0 : index][0];
+  }
+
+  function usePriorityStore() {
+    return useSelectedStore(usePriorityConnector());
+  }
+
+  function usePriorityChainId() {
+    return useSelectedChainId(usePriorityConnector());
+  }
+
+  function usePriorityAccounts() {
+    return useSelectedAccounts(usePriorityConnector());
+  }
+
+  function usePriorityIsActivating() {
+    return useSelectedIsActivating(usePriorityConnector());
+  }
+
+  function usePriorityAccount() {
+    return useSelectedAccount(usePriorityConnector());
+  }
+
+  function usePriorityIsActive() {
+    return useSelectedIsActive(usePriorityConnector());
+  }
+
+  function usePriorityProvider() {
+    return useSelectedProvider(usePriorityConnector());
+  }
+
+  return {
+    useSelectedStore,
+    useSelectedChainId,
+    useSelectedAccounts,
+    useSelectedIsActivating,
+    useSelectedAccount,
+    useSelectedIsActive,
+    useSelectedProvider,
+    usePriorityConnector,
+    usePriorityStore,
+    usePriorityChainId,
+    usePriorityAccounts,
+    usePriorityIsActivating,
+    usePriorityAccount,
+    usePriorityIsActive,
+    usePriorityProvider,
+  };
 }
