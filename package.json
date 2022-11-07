@@ -29,5 +29,6 @@
   "dependencies": {
     "@hedera-react/core": "^0.0.5",
     "@hedera-react/flash": "^0.0.1"
-  }
+  },
+  "version": "0.1.0"
 }

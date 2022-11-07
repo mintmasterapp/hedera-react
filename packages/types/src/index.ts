@@ -62,9 +62,9 @@ export abstract class Connector {
     this.actions.resetState();
   }
 
-  public abstract activate(...args: unknown[]): Promise<void> | void;
+  public abstract activate(...args: unknown[]): Promise<unknown> | unknown;
 
-  public connectEagerly?(...args: unknown[]): Promise<void> | void;
+  public connectEagerly?(...args: unknown[]): Promise<unknown> | unknown;
 
-  public deactivate?(...args: unknown[]): Promise<void> | void;
+  public deactivate?(...args: unknown[]): Promise<unknown> | unknown;
 }

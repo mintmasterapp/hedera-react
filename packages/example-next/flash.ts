@@ -1,9 +1,9 @@
-import type { Actions, ProviderRpcError } from "@hedera-react/types";
+import type { Actions } from "@hedera-react/types";
 import type { IClientMeta } from "@walletconnect/types";
 import WalletConnect from "@walletconnect/client";
 import { Connector } from "@hedera-react/types";
 import EventEmitter3 from "eventemitter3";
-import type { EventEmitter } from "node:events";
+import qrcodeModal from "./modal";
 
 interface WalletConnectArgs {
   actions: Actions;
@@ -24,7 +24,6 @@ export class FlashConnect extends Connector {
   public readonly events = new EventEmitter3();
   public readonly clientMeta: IClientMeta;
   private readonly defaultChainId: number;
-  private readonly timeout: number;
 
   private eagerConnection?: Promise<void>;
 
@@ -33,21 +32,23 @@ export class FlashConnect extends Connector {
     clientMeta,
     onError,
     defaultChainId,
-    timeout = 5000,
   }: WalletConnectArgs) {
-    super(actions);
+    super(actions, onError);
     const provider = new WalletConnect({
       bridge: bridge,
       clientMeta: clientMeta,
+      qrcodeModal: qrcodeModal,
     });
-    if (provider?.connected) {
+    if (!provider?.connected) {
       provider?.createSession({ chainId: defaultChainId });
+    } else {
+      this.actions.update({ chainId: provider?.chainId || 0 });
+      this.actions.update({ accounts: provider?.accounts || [] });
     }
     this.onError = onError;
     this.clientMeta = clientMeta;
     this.provider = provider;
     this.defaultChainId = defaultChainId || 1;
-    this.timeout = timeout;
   }
 
   private update = (error: any, payload: any): void => {
@@ -75,9 +76,10 @@ export class FlashConnect extends Connector {
         this.provider = new m.default({
           bridge,
           clientMeta: this.clientMeta,
+          qrcodeModal: qrcodeModal,
         }) as unknown as WalletConnect;
 
-        await this.provider.createSession({ chainId });
+        this.provider.createSession({ chainId });
 
         this.provider.on("connect", this.update);
         this.provider.on("session_update", this.update);
@@ -112,9 +114,6 @@ export class FlashConnect extends Connector {
       await this.deactivate();
     try {
       await this.isomorphicInitialize(desiredChainId);
-      const accounts = this.provider?.accounts;
-      const chainId = this.provider!.chainId;
-      this.actions.update({ chainId, accounts });
     } catch (error) {
       cancelActivation();
       throw error;
