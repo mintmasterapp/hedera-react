@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@hedera-react/store": "^0.0.7",
-    "@hedera-react/types": "^0.0.4",
+    "@hedera-react/types": "^0.0.12",
     "zustand": "^4.1.3"
   },
   "peerDependencies": {
