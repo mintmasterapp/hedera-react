@@ -2,28 +2,6 @@
 # yarn lockfile v1
 
 
-"@hedera-react/store@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@hedera-react/store/-/store-0.0.7.tgz#1742ad0a62033a497794824a3346b533c5abac0f"
-  integrity sha512-v41v7fbQzaF80oQJaumSLRdVXxUbrqYX/6QJyZ4LWNoF7NrS+x89JOnXWZtULJ9tmd4myeKxLKKndTwSxdFr8g==
-  dependencies:
-    "@hedera-react/types" "^0.0.4"
-    zustand "^4.1.3"
-
-"@hedera-react/types@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@hedera-react/types/-/types-0.0.12.tgz#0457958cbb60d826f71337de33ad48204998be57"
-  integrity sha512-8NnPj/743mBfbUpb/nDrudhWAPq1puN4eizKl8LFdD0X2Ud4Ld06sSKoLkjxKEqoBe1ls4Gv6VKqxlqpsumQCA==
-  dependencies:
-    zustand "^4.1.3"
-
-"@hedera-react/types@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@hedera-react/types/-/types-0.0.4.tgz#8b31b05550fa3eead3096f77b2c545abc8dafcef"
-  integrity sha512-ZysrZwopNym1Y110GEsBB0gUMessepJjBeF3aqQTWbWQwKU/2suKo6DmMw23kVMMGzuoCJjph6wSV3SLlNZ4gA==
-  dependencies:
-    zustand "^4.1.3"
-
 use-sync-external-store@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz#7dbefd6ef3fe4e767a0cf5d7287aacfb5846928a"
