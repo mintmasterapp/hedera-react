@@ -13,10 +13,6 @@ export type HederaReactHooks = ReturnType<typeof getStateHooks> &
   ReturnType<typeof getDerivedHooks> &
   ReturnType<typeof getAugmentedHooks>;
 
-export type HederaReactSelectedHooks = ReturnType<typeof getSelectedConnector>;
-
-export type HederaReactPriorityHooks = ReturnType<typeof getPriorityConnector>;
-
 export function initializeConnector<T extends Connector>(
   f: (actions: Actions) => T
 ): [T, HederaReactHooks, HederaReactStore] {
@@ -27,11 +23,7 @@ export function initializeConnector<T extends Connector>(
 
   const stateHooks = getStateHooks(useConnector);
   const derivedHooks = getDerivedHooks(stateHooks);
-  const augmentedHooks = getAugmentedHooks<T>(
-    connector,
-    stateHooks,
-    derivedHooks
-  );
+  const augmentedHooks = getAugmentedHooks(connector, stateHooks, derivedHooks);
 
   return [
     connector,
@@ -42,156 +34,6 @@ export function initializeConnector<T extends Connector>(
     },
     store,
   ];
-}
-
-function computeIsActive({ chainId, accounts, activating }: HederaReactState) {
-  return Boolean(chainId && accounts && !activating);
-}
-
-export function getSelectedConnector(
-  ...initializedConnectors:
-    | [Connector, HederaReactHooks][]
-    | [Connector, HederaReactHooks, HederaReactStore][]
-) {
-  function getIndex(connector: Connector) {
-    const index = initializedConnectors.findIndex(
-      ([initializedConnector]) => connector === initializedConnector
-    );
-    if (index === -1) throw new Error("Connector not found");
-    return index;
-  }
-
-  function useSelectedStore(connector: Connector) {
-    const store = initializedConnectors[getIndex(connector)][2];
-    if (!store) throw new Error("Stores not passed");
-    return store;
-  }
-
-  function useSelectedChainId(connector: Connector) {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const values = initializedConnectors.map(([, { useChainId }]) =>
-      useChainId()
-    );
-    return values[getIndex(connector)];
-  }
-
-  function useSelectedAccounts(connector: Connector) {
-    const values = initializedConnectors.map(([, { useAccounts }]) =>
-      useAccounts()
-    );
-    return values[getIndex(connector)];
-  }
-
-  function useSelectedIsActivating(connector: Connector) {
-    const values = initializedConnectors.map(([, { useIsActivating }]) =>
-      useIsActivating()
-    );
-    return values[getIndex(connector)];
-  }
-
-  function useSelectedAccount(connector: Connector) {
-    const values = initializedConnectors.map(([, { useAccount }]) =>
-      useAccount()
-    );
-    return values[getIndex(connector)];
-  }
-
-  function useSelectedIsActive(connector: Connector) {
-    const values = initializedConnectors.map(([, { useIsActive }]) =>
-      useIsActive()
-    );
-    return values[getIndex(connector)];
-  }
-
-  function useSelectedProvider<T>(connector: Connector): T | undefined {
-    const index = getIndex(connector);
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const values = initializedConnectors.map(([, { useProvider }], i) =>
-      useProvider<T>()
-    );
-    return values[index];
-  }
-
-  return {
-    useSelectedStore,
-    useSelectedChainId,
-    useSelectedAccounts,
-    useSelectedIsActivating,
-    useSelectedAccount,
-    useSelectedIsActive,
-    useSelectedProvider,
-  };
-}
-
-export function getPriorityConnector(
-  ...initializedConnectors:
-    | [Connector, HederaReactHooks][]
-    | [Connector, HederaReactHooks, HederaReactStore][]
-) {
-  const {
-    useSelectedStore,
-    useSelectedChainId,
-    useSelectedAccounts,
-    useSelectedIsActivating,
-    useSelectedAccount,
-    useSelectedIsActive,
-    useSelectedProvider,
-  } = getSelectedConnector(...initializedConnectors);
-
-  function usePriorityConnector() {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const values = initializedConnectors.map(([, { useIsActive }]) =>
-      useIsActive()
-    );
-    const index = values.findIndex((isActive) => isActive);
-    return initializedConnectors[index === -1 ? 0 : index][0];
-  }
-
-  function usePriorityStore() {
-    return useSelectedStore(usePriorityConnector());
-  }
-
-  function usePriorityChainId() {
-    return useSelectedChainId(usePriorityConnector());
-  }
-
-  function usePriorityAccounts() {
-    return useSelectedAccounts(usePriorityConnector());
-  }
-
-  function usePriorityIsActivating() {
-    return useSelectedIsActivating(usePriorityConnector());
-  }
-
-  function usePriorityAccount() {
-    return useSelectedAccount(usePriorityConnector());
-  }
-
-  function usePriorityIsActive() {
-    return useSelectedIsActive(usePriorityConnector());
-  }
-
-  function usePriorityProvider<T>() {
-    return useSelectedProvider<T>(usePriorityConnector());
-  }
-
-  return {
-    useSelectedStore,
-    useSelectedChainId,
-    useSelectedAccounts,
-    useSelectedIsActivating,
-    useSelectedAccount,
-    useSelectedIsActive,
-    useSelectedProvider,
-    usePriorityConnector,
-    usePriorityStore,
-    usePriorityChainId,
-    usePriorityAccounts,
-    usePriorityIsActivating,
-    usePriorityAccount,
-    usePriorityIsActive,
-    usePriorityProvider,
-  };
 }
 
 const CHAIN_ID = ({ chainId }: HederaReactState) => chainId;
@@ -222,6 +64,10 @@ function getStateHooks(useConnector: UseBoundStore<HederaReactStore>) {
   }
 
   return { useChainId, useAccounts, useIsActivating };
+}
+
+function computeIsActive({ chainId, accounts, activating }: HederaReactState) {
+  return Boolean(chainId && accounts && !activating);
 }
 
 function getDerivedHooks({
@@ -258,6 +104,7 @@ function getAugmentedHooks<T extends Connector>(
     const chainId = useChainId();
 
     return useMemo(() => {
+      void isActive && chainId;
       return connector.provider as unknown as T;
     }, [isActive, chainId]);
   }
