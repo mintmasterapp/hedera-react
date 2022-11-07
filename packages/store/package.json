@@ -23,7 +23,7 @@
     "start": "tsc --watch"
   },
   "dependencies": {
-    "@hedera-react/types": "^0.0.4",
+    "@hedera-react/types": "^0.0.12",
     "zustand": "^4.1.3"
   }
 }

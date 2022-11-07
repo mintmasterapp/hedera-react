@@ -1,4 +1,4 @@
-import type { EventEmitter } from "node:events";
+// import type { EventEmitter } from "node:events";
 import type { StoreApi } from "zustand";
 
 export interface HederaReactState {
@@ -34,9 +34,9 @@ export interface RequestArguments {
   readonly params?: readonly unknown[] | object;
 }
 
-export interface Provider extends EventEmitter {
-  request(args: RequestArguments): Promise<unknown>;
-}
+// export interface Provider extends EventEmitter {
+//   request(args: RequestArguments): Promise<unknown>;
+// }
 
 export interface ProviderConnectInfo {
   readonly chainId: string;
@@ -49,8 +49,7 @@ export interface ProviderRpcError extends Error {
 }
 
 export abstract class Connector {
-  public provider?: Provider;
-  public customProvider?: unknown;
+  public provider?: unknown;
   protected readonly actions: Actions;
   protected onError?: (error: Error) => void;
 

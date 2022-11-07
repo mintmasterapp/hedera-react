@@ -1,8 +1,14 @@
+import FlashCard from "../components/FlashCard";
+import HashPackCard from "../components/HashPackCard";
+import { Header } from "../components/Header";
+import Pager from "../components/Pager";
+
 export default function Home() {
   return (
-    <div>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      <button onClick={() => {}}>Change</button>
-    </div>
+    <Pager>
+      <Header />
+      <FlashCard />
+      <HashPackCard />
+    </Pager>
   );
 }
