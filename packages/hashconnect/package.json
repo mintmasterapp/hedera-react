@@ -1,0 +1,35 @@
+{
+  "name": "@hedera-react/hashconnect",
+  "keywords": [
+    "hedera-react"
+  ],
+  "version": "0.1.5",
+  "author": "Nasim Akhtar <devnasim18@gmail.com>",
+  "license": "GPL-3.0-or-later",
+  "repository": "github:mintmasterapp/hedera-react",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist/*"
+  ],
+  "type": "commonjs",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "exports": "./dist/index.js",
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "npx tsc",
+    "start": "tsc --watch"
+  },
+  "dependencies": {
+    "@hedera-react/types": "^0.1.0",
+    "hashconnect": "^0.2.3",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@types/qrcode": "^1.5.0",
+    "@types/react-dom": "^18.0.8"
+  }
+}
