@@ -1,11 +1,8 @@
-# `types`
-
-> TODO: description
+# `@hedera-react/flash`
 
 ## Usage
 
 ```
-const types = require('types');
+import FlashWallet from "@hedera-react/flash"
 
-// TODO: DEMONSTRATE API
 ```

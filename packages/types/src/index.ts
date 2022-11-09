@@ -1,4 +1,3 @@
-// import type { EventEmitter } from "node:events";
 import type { StoreApi } from "zustand";
 
 export interface HederaReactState {

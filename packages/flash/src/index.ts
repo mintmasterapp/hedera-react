@@ -10,10 +10,12 @@ interface WalletConnectArgs {
   clientMeta: IClientMeta;
   defaultChainId?: number;
   onError?: (error: Error) => void;
-  timeout?: number;
+  enableQRModal?: boolean;
 }
 
 const bridge = "https://bridge.walletconnect.org";
+
+export const URI_AVAILABLE = "URI_AVAILABLE";
 
 function parseChainId(chainId: string | number) {
   return typeof chainId === "string" ? Number.parseInt(chainId) : chainId;
@@ -24,6 +26,7 @@ export class FlashConnect extends Connector {
   public readonly events = new EventEmitter3();
   public readonly clientMeta: IClientMeta;
   private readonly defaultChainId: number;
+  private readonly enableQRModal: boolean;
 
   private eagerConnection?: Promise<void>;
 
@@ -32,23 +35,12 @@ export class FlashConnect extends Connector {
     clientMeta,
     onError,
     defaultChainId,
+    enableQRModal,
   }: WalletConnectArgs) {
     super(actions, onError);
-    const provider = new WalletConnect({
-      bridge: bridge,
-      clientMeta: clientMeta,
-      qrcodeModal: qrcodeModal,
-    });
-    if (!provider?.connected) {
-      provider?.createSession({ chainId: defaultChainId });
-    } else {
-      this.actions.update({ chainId: provider?.chainId || 0 });
-      this.actions.update({ accounts: provider?.accounts || [] });
-    }
-    this.onError = onError;
     this.clientMeta = clientMeta;
-    this.provider = provider;
     this.defaultChainId = defaultChainId || 1;
+    this.enableQRModal = enableQRModal || true;
   }
 
   private update = (error: any, payload: any): void => {
@@ -58,12 +50,17 @@ export class FlashConnect extends Connector {
     const { accounts, chainId } = payload.params[0];
     this.actions.update({ chainId: parseChainId(chainId) });
     this.actions.update({ accounts });
+    qrcodeModal.close();
   };
   private disconnect = (error: any, payload: any): void => {
     if (error) {
       this.onError?.(error);
     }
     this.actions.resetState();
+  };
+
+  private URIListener = (uri: string): void => {
+    this.events.emit(URI_AVAILABLE, uri);
   };
 
   public async isomorphicInitialize(
@@ -76,11 +73,11 @@ export class FlashConnect extends Connector {
         this.provider = new m.default({
           bridge,
           clientMeta: this.clientMeta,
-          qrcodeModal: qrcodeModal,
         }) as unknown as WalletConnect;
-
-        this.provider.createSession({ chainId });
-
+        if (!this.provider.connected) {
+          await this.provider.createSession({ chainId });
+          this.URIListener(this.provider.uri);
+        }
         this.provider.on("connect", this.update);
         this.provider.on("session_update", this.update);
         this.provider.on("disconnect", this.disconnect);
@@ -90,7 +87,6 @@ export class FlashConnect extends Connector {
 
   public async connectEagerly(): Promise<void> {
     const cancelActivation = this.actions.startActivation();
-
     try {
       await this.isomorphicInitialize();
       if (!this.provider?.connected) throw Error("No existing connection");
@@ -106,14 +102,20 @@ export class FlashConnect extends Connector {
 
   public async activate(desiredChainId?: number): Promise<void> {
     if (this.provider?.connected) {
-      throw new Error("Already Connected");
+      throw Error("Already Connected");
     }
     const cancelActivation = this.actions.startActivation();
 
     if (desiredChainId && desiredChainId !== this.provider?.chainId)
       await this.deactivate();
+
     try {
       await this.isomorphicInitialize(desiredChainId);
+      if (this.provider && this.enableQRModal) {
+        qrcodeModal.open(this.provider.uri, async () => {
+          await this.deactivate();
+        });
+      }
     } catch (error) {
       cancelActivation();
       throw error;
@@ -124,7 +126,9 @@ export class FlashConnect extends Connector {
     this.provider?.off("connect");
     this.provider?.off("session_update");
     this.provider?.off("disconnect");
-    await this.provider?.killSession();
+    if (this.provider?.connected) {
+      await this.provider?.killSession();
+    }
     this.provider = undefined;
     this.eagerConnection = undefined;
     this.actions.resetState();

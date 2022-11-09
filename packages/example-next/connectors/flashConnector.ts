@@ -1,7 +1,7 @@
 import { initializeConnector } from "@hedera-react/core";
-import { FlashConnect } from "../flash";
+import { FlashConnect } from "@hedera-react/flash";
 
-export const [flashConnector, hooks] = initializeConnector(
+export const [flashConnector, hooks] = initializeConnector<FlashConnect>(
   (actions) =>
     new FlashConnect({
       actions,
@@ -11,5 +11,5 @@ export const [flashConnector, hooks] = initializeConnector(
         icons: ["https://mintmaster.s3.us-east-1.amazonaws.com/flash.png"],
         name: "Flash Demo",
       },
-    }) as any
+    })
 );

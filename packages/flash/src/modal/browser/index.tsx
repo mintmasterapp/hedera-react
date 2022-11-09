@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { getDocumentOrThrow } from "@walletconnect/legacy-utils";
 import { WALLETCONNECT_STYLE_SHEET } from "./assets/style";
 import Modal from "./components/Modal";
@@ -57,10 +57,8 @@ function getWrappedCallback(cb: any): any {
 export function open(uri: string, cb: any) {
   injectStyleSheet();
   const wrapper = renderWrapper();
-  ReactDOM.render(
-    <Modal uri={uri} onClose={getWrappedCallback(cb)} />,
-    wrapper
-  );
+  const root = createRoot(wrapper);
+  root.render(<Modal uri={uri} onClose={getWrappedCallback(cb)} />);
 }
 
 export function close() {
