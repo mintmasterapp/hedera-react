@@ -3,12 +3,13 @@ import { useEffect, useState } from "react";
 import { hashConnector, hooks } from "../connectors/hashConnector";
 import Button from "./Button";
 
-const { useAccount, useIsActive, useChainId } = hooks;
+const { useAccount, useIsActive, useChainId, useIsActivating } = hooks;
 
 export default function HashPackCard() {
   const active = useIsActive();
   const account = useAccount();
   const chainId = useChainId();
+  const activating = useIsActivating();
 
   useEffect(() => {
     if (hashConnector.connectEagerly) {
@@ -25,9 +26,11 @@ export default function HashPackCard() {
           <p className="text-white mt-2">Connect Hedera App without pain</p>
           {account && <p className="mt-2 text-green-500">account:{account}</p>}
           {chainId && <p className="mt-2 text-green-500">chainId:{chainId}</p>}
+          {activating && <p className="mt-2 text-yellow-500">Connecting...</p>}
         </div>
         <Button
           name={active ? "Disconnect" : "Connect"}
+          disabled={activating}
           onClick={() => {
             if (active) {
               if (hashConnector?.deactivate) {

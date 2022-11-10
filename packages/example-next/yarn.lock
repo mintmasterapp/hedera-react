@@ -91,7 +91,7 @@
     long "^4.0.0"
     protobufjs "^6.11.3"
 
-"@hashgraph/sdk@^2.14.2":
+"@hashgraph/sdk@^2.14.2", "@hashgraph/sdk@^2.18.5":
   version "2.18.5"
   resolved "https://registry.yarnpkg.com/@hashgraph/sdk/-/sdk-2.18.5.tgz#f51d9f25fe7ff42393706f01f275bdab369e063e"
   integrity sha512-YMWS18JEdP4hJ21/8IrvkWPPDdYTWD+yodYVG5q7+cEszZkqjuqbMr87RnUBpoo3030HROdzV6STTCS+zHhifw==
@@ -127,6 +127,16 @@
     "@walletconnect/client" "^1.8.0"
     "@walletconnect/legacy-utils" "^2.0.0-rc.0"
     qrcode "^1.5.1"
+    react "18.2.0"
+    react-dom "18.2.0"
+
+"@hedera-react/hashconnect@^0.1.6":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@hedera-react/hashconnect/-/hashconnect-0.1.9.tgz#431a725a8d12582ae255c0457644a79c8dbcc47c"
+  integrity sha512-AOK30V8X4lamZoNkAUaOmTE9U3Q8XoY0mVeW+8Hs0K/E8nuqGuhfprFxD+/3TC4DZsVRPCz7oNAq160WV1AA1w==
+  dependencies:
+    "@hedera-react/types" "^0.1.0"
+    hashconnect "^0.2.3"
     react "18.2.0"
     react-dom "18.2.0"
 

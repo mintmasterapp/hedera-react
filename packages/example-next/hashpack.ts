@@ -47,12 +47,14 @@ export class HashConnect extends Connector {
     return (this.eagerConnection = import("hashconnect").then(async (m) => {
       this.provider = new m.HashConnect() as unknown as WHashConnect;
       await this.provider.init(this.appMetaData, "mainnet");
-      console.log(this.provider);
       this.provider.foundExtensionEvent.on((data) => {
         this.isFoundExtension = true;
       });
       this.provider.pairingEvent.on(this.update);
       this.provider.connectionStatusChangeEvent.on(this.disconnect);
+      this.provider.acknowledgeMessageEvent.on((acknowledgeData) => {
+        console.log("acknowledgeData", acknowledgeData);
+      });
     }));
   }
 

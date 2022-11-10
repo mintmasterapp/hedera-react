@@ -6,6 +6,7 @@ import {
   HashConnectTypes,
   MessageTypes,
 } from "hashconnect";
+import { AccountId } from "@hashgraph/sdk";
 
 interface HashConnectArgs {
   actions: Actions;
@@ -34,7 +35,11 @@ export class HashConnect extends Connector {
   private update = (state: MessageTypes.ApprovePairing): void => {
     console.log("hashconnect state change event", state);
     this.actions.update({ chainId: parseChainId(state.network) });
-    this.actions.update({ accounts: state.accountIds });
+    this.actions.update({
+      accounts: state.accountIds.map((item) =>
+        AccountId.fromString(item).toSolidityAddress().toString()
+      ),
+    });
   };
 
   private disconnect = (state: any): void => {
@@ -47,7 +52,6 @@ export class HashConnect extends Connector {
     return (this.eagerConnection = import("hashconnect").then(async (m) => {
       this.provider = new m.HashConnect() as unknown as WHashConnect;
       await this.provider.init(this.appMetaData, "mainnet");
-      console.log(this.provider);
       this.provider.foundExtensionEvent.on((data) => {
         this.isFoundExtension = true;
       });
@@ -64,7 +68,12 @@ export class HashConnect extends Connector {
       const accounts = await this.provider?.hcData.pairingData[0].accountIds;
       if (!accounts.length) throw new Error("No accounts returned");
       const network = await this.provider?.hcData.pairingData[0].network;
-      this.actions.update({ chainId: parseChainId(network), accounts });
+      this.actions.update({
+        chainId: parseChainId(network),
+        accounts: accounts.map((item) =>
+          AccountId.fromString(item).toSolidityAddress().toString()
+        ),
+      });
     } catch (error) {
       cancelActivation();
       throw error;

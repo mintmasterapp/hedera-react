@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hashgraph/sdk": "^2.18.5",
     "@hedera-react/core": "^0.1.2",
     "@hedera-react/flash": "^0.1.4",
     "@hedera-react/store": "^0.1.1",
