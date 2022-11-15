@@ -9,15 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@hashgraph/sdk": "^2.18.5",
     "@hedera-react/core": "^0.1.2",
     "@hedera-react/flash": "^0.1.4",
+    "@hedera-react/hashconnect": "^0.1.11",
     "@hedera-react/store": "^0.1.1",
     "@hedera-react/types": "^0.1.0",
-    "hashconnect": "^0.2.3",
     "next": "13.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0"
+  },
+  "resolutions": {
+    "@hashgraph/sdk": "^2.18.6"
   },
   "devDependencies": {
     "@types/node": "18.11.7",

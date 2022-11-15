@@ -1,5 +1,5 @@
 import { initializeConnector } from "@hedera-react/core";
-import { HashConnect } from "../hashpack";
+import { HashConnect } from "@hedera-react/hashconnect";
 
 export const [hashConnector, hooks] = initializeConnector<HashConnect>(
   (actions) =>
