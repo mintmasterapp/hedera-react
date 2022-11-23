@@ -20,37 +20,40 @@ yarn add @hedera-react/core @hedera-react/flash @hedera-react/hashconnect @heder
 
 ## Initialisation
 
+Following steps are required to integrate flash wallet to your dapp. 
+
 # Create a connector file
 
 ```
 
-import { initializeConnector } from '@hedera-react/core';
-import { HashConnect } from '@hedera-react/hashconnect';
+import { initializeConnector } from "@hedera-react/core";
+import { FlashConnect } from "@hedera-react/flash";
 
-export const [hashConnector, hooks] = initializeConnector<any>(
+export const [flashConnector, hooks] = initializeConnector<FlashConnect>(
   (actions) =>
-    new HashConnect({
+    new FlashConnect({
       actions,
-      appMetaData: {
-        name: 'Project Name',
-        description: 'Description',
-        icon: 'https://www.hashpack.app/img/logo.svg',
+      clientMeta: {
+        description: "Flash Wallet Demo",
+        url: "https://flash-demo.vercel.app",
+        icons: ["https://mintmaster.s3.us-east-1.amazonaws.com/flash.png"],
+        name: "Flash Demo",
       },
-    }),
+    })
 );
 
 ```
 
 # Usage
 
-Call the hashConnector from connector file in the useEffect of the component
+Call the flashConnector from connector file in the useEffect of the component
 
 ```
-import { hashConnector } from '../../connectors/hashConnector';
+import { flashConnector } from '../../connectors/flashConnector';
 
   useEffect(() => {
-    if (hashConnector.connectEagerly) {
-      hashConnector.connectEagerly().catch(() => {
+    if (flashConnector.connectEagerly) {
+      flashConnector.connectEagerly().catch(() => {
         console.debug("Failed to connect eagerly to walletconnect");
       });
     }
@@ -64,7 +67,7 @@ Activating the wallet
 ```
   <WalletBtn
     onClick={() => {
-        hashConnector.activate().catch((err: any) => {
+        flashConnector.activate().catch((err: any) => {
           console.log('err', err);
         });
     }}
@@ -75,13 +78,13 @@ Activating the wallet
 Disconnecting from the wallet
 
 ```
-<button onClick={() => hashConnector.deactivate()}>Logout</button>
+<button onClick={() => flashConnector.deactivate()}>Logout</button>
 ```
 
 Fetching active state and account
 
 ```
-import { hooks } from '../../connectors/hashConnector';
+import { hooks } from '../../connectors/flashConnector';
 const { useAccount, useIsActive, chainId, useIsActivating } = hooks;
 const active = useIsActive();
 const account = useAccount();
