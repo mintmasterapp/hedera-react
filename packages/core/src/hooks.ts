@@ -38,7 +38,7 @@ export function initializeConnector<T extends Connector>(
   ];
 }
 
-const CHAIN_ID = ({ chainId }: HederaReactState) => chainId;
+const CHAIN_ID = ({ network }: HederaReactState) => network;
 const ACCOUNTS = ({ accounts }: HederaReactState) => accounts;
 
 const ACCOUNTS_EQUALITY_CHECKER = (
@@ -53,7 +53,7 @@ const ACCOUNTS_EQUALITY_CHECKER = (
 const ACTIVATING = ({ activating }: HederaReactState) => activating;
 
 function getStateHooks(useConnector: UseBoundStore<HederaReactStore>) {
-  function useChainId(): HederaReactState["chainId"] {
+  function useNetwork(): HederaReactState["network"] {
     return useConnector(CHAIN_ID);
   }
 
@@ -65,15 +65,15 @@ function getStateHooks(useConnector: UseBoundStore<HederaReactStore>) {
     return useConnector(ACTIVATING);
   }
 
-  return { useChainId, useAccounts, useIsActivating };
+  return { useNetwork, useAccounts, useIsActivating };
 }
 
-function computeIsActive({ chainId, accounts, activating }: HederaReactState) {
-  return Boolean(chainId && accounts && !activating);
+function computeIsActive({ network, accounts, activating }: HederaReactState) {
+  return Boolean(network && accounts && !activating);
 }
 
 function getDerivedHooks({
-  useChainId,
+  useNetwork,
   useAccounts,
   useIsActivating,
 }: ReturnType<typeof getStateHooks>) {
@@ -82,12 +82,12 @@ function getDerivedHooks({
   }
 
   function useIsActive(): boolean {
-    const chainId = useChainId();
+    const network = useNetwork();
     const accounts = useAccounts();
     const activating = useIsActivating();
 
     return computeIsActive({
-      chainId,
+      network,
       accounts,
       activating,
     });
@@ -98,17 +98,17 @@ function getDerivedHooks({
 
 function getAugmentedHooks<T extends Connector>(
   connector: T,
-  { useChainId }: ReturnType<typeof getStateHooks>,
+  { useNetwork }: ReturnType<typeof getStateHooks>,
   { useIsActive }: ReturnType<typeof getDerivedHooks>
 ) {
   function useProvider<T>(enable: boolean): T | undefined {
     const isActive = useIsActive();
-    const chainId = useChainId();
+    const network = useNetwork();
 
     return useMemo(() => {
-      void enable && isActive && chainId;
+      void enable && isActive && network;
       return connector.provider as unknown as T;
-    }, [isActive, chainId]);
+    }, [isActive, network]);
   }
 
   return { useProvider };
@@ -133,9 +133,9 @@ export function getSelectedConnector(
     return store;
   }
 
-  function useSelectedChainId(connector: Connector) {
-    const values = initializedConnectors.map(([, { useChainId }]) =>
-      useChainId()
+  function useSelectedNetwork(connector: Connector) {
+    const values = initializedConnectors.map(([, { useNetwork }]) =>
+      useNetwork()
     );
     return values[getIndex(connector)];
   }
@@ -178,7 +178,7 @@ export function getSelectedConnector(
 
   return {
     useSelectedStore,
-    useSelectedChainId,
+    useSelectedNetwork,
     useSelectedAccounts,
     useSelectedIsActivating,
     useSelectedAccount,
@@ -194,7 +194,7 @@ export function getPriorityConnector(
 ) {
   const {
     useSelectedStore,
-    useSelectedChainId,
+    useSelectedNetwork,
     useSelectedAccounts,
     useSelectedIsActivating,
     useSelectedAccount,
@@ -214,8 +214,8 @@ export function getPriorityConnector(
     return useSelectedStore(usePriorityConnector());
   }
 
-  function usePriorityChainId() {
-    return useSelectedChainId(usePriorityConnector());
+  function usePriorityNetwork() {
+    return useSelectedNetwork(usePriorityConnector());
   }
 
   function usePriorityAccounts() {
@@ -240,7 +240,7 @@ export function getPriorityConnector(
 
   return {
     useSelectedStore,
-    useSelectedChainId,
+    useSelectedNetwork,
     useSelectedAccounts,
     useSelectedIsActivating,
     useSelectedAccount,
@@ -248,7 +248,7 @@ export function getPriorityConnector(
     useSelectedProvider,
     usePriorityConnector,
     usePriorityStore,
-    usePriorityChainId,
+    usePriorityNetwork,
     usePriorityAccounts,
     usePriorityIsActivating,
     usePriorityAccount,

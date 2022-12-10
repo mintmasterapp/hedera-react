@@ -1,4 +1,4 @@
-import type { Actions } from "@hedera-react/types";
+import { Actions, Network } from "@hedera-react/types";
 import type { IClientMeta } from "@walletconnect/types";
 import WalletConnect from "@walletconnect/client";
 import { Connector } from "@hedera-react/types";
@@ -8,7 +8,7 @@ import qrcodeModal from "./modal";
 interface WalletConnectArgs {
   actions: Actions;
   clientMeta: IClientMeta;
-  defaultChainId?: number;
+  defaultNetwork?: Network;
   onError?: (error: Error) => void;
   enableQRModal?: boolean;
 }
@@ -21,11 +21,22 @@ function parseChainId(chainId: string | number) {
   return typeof chainId === "string" ? Number.parseInt(chainId) : chainId;
 }
 
+function parseNetwork(chainId: string | number) {
+  const chain = parseChainId(chainId);
+  if (chain === 1) {
+    return Network.HederaMainnet;
+  }
+  if (chain === 2) {
+    return Network.HederaTestnet;
+  }
+  return undefined;
+}
+
 export class FlashConnect extends Connector {
   public provider?: WalletConnect;
   public readonly events = new EventEmitter3();
   public readonly clientMeta: IClientMeta;
-  private readonly defaultChainId: number;
+  private readonly defaultNetwork: Network;
   private readonly enableQRModal: boolean;
 
   private eagerConnection?: Promise<void>;
@@ -34,12 +45,12 @@ export class FlashConnect extends Connector {
     actions,
     clientMeta,
     onError,
-    defaultChainId,
+    defaultNetwork,
     enableQRModal,
   }: WalletConnectArgs) {
     super(actions, onError);
     this.clientMeta = clientMeta;
-    this.defaultChainId = defaultChainId || 1;
+    this.defaultNetwork = defaultNetwork || Network.HederaMainnet;
     this.enableQRModal = enableQRModal || true;
   }
 
@@ -48,10 +59,11 @@ export class FlashConnect extends Connector {
       this.onError?.(error);
     }
     const { accounts, chainId } = payload.params[0];
-    this.actions.update({ chainId: parseChainId(chainId) });
-    this.actions.update({ accounts });
+    const network = parseNetwork(chainId);
+    this.actions.update({ network, accounts });
     qrcodeModal.close();
   };
+
   private disconnect = (error: any, payload: any): void => {
     if (error) {
       this.onError?.(error);
@@ -64,7 +76,7 @@ export class FlashConnect extends Connector {
   };
 
   public async isomorphicInitialize(
-    chainId = this.defaultChainId
+    network = this.defaultNetwork
   ): Promise<void> {
     if (this.eagerConnection) return;
 
@@ -75,7 +87,9 @@ export class FlashConnect extends Connector {
           clientMeta: this.clientMeta,
         }) as unknown as WalletConnect;
         if (!this.provider.connected) {
-          await this.provider.createSession({ chainId });
+          await this.provider.createSession({
+            chainId: network === Network.HederaMainnet ? 1 : 2,
+          });
           this.URIListener(this.provider.uri);
         }
         this.provider.on("connect", this.update);
@@ -93,24 +107,31 @@ export class FlashConnect extends Connector {
       const accounts = await this.provider?.accounts;
       if (!accounts.length) throw new Error("No accounts returned");
       const chainId = await this.provider.chainId;
-      this.actions.update({ chainId, accounts });
+      this.actions.update({
+        network: parseNetwork(chainId),
+        accounts,
+      });
     } catch (error) {
       cancelActivation();
       throw error;
     }
   }
 
-  public async activate(desiredChainId?: number): Promise<void> {
+  public async activate(desiredNetwork?: Network): Promise<void> {
     if (this.provider?.connected) {
       throw Error("Already Connected");
     }
     const cancelActivation = this.actions.startActivation();
 
-    if (desiredChainId && desiredChainId !== this.provider?.chainId)
+    if (
+      desiredNetwork &&
+      this.provider?.chainId &&
+      desiredNetwork !== parseNetwork(this.provider?.chainId)
+    )
       await this.deactivate();
 
     try {
-      await this.isomorphicInitialize(desiredChainId);
+      await this.isomorphicInitialize(desiredNetwork);
       if (this.provider && this.enableQRModal) {
         qrcodeModal.open(this.provider.uri, async () => {
           await this.deactivate();

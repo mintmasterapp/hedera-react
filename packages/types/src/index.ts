@@ -1,7 +1,12 @@
 import type { StoreApi } from "zustand";
 
+export enum Network {
+  HederaMainnet,
+  HederaTestnet,
+}
+
 export interface HederaReactState {
-  chainId: number | undefined;
+  network: Network | undefined;
   accounts: string[] | undefined;
   activating: boolean;
 }
@@ -10,15 +15,15 @@ export type HederaReactStore = StoreApi<HederaReactState>;
 
 export type HederaReactStateUpdate =
   | {
-      chainId: number;
+      network: Network;
       accounts: string[];
     }
   | {
-      chainId: number;
+      network: Network;
       accounts?: never;
     }
   | {
-      chainId?: never;
+      network?: never;
       accounts: string[];
     };
 
@@ -31,20 +36,6 @@ export interface Actions {
 export interface RequestArguments {
   readonly method: string;
   readonly params?: readonly unknown[] | object;
-}
-
-// export interface Provider extends EventEmitter {
-//   request(args: RequestArguments): Promise<unknown>;
-// }
-
-export interface ProviderConnectInfo {
-  readonly chainId: string;
-}
-
-export interface ProviderRpcError extends Error {
-  message: string;
-  code: number;
-  data?: unknown;
 }
 
 export abstract class Connector {

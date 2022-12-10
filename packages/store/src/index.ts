@@ -6,25 +6,13 @@ import {
 } from "@hedera-react/types";
 import { createStore } from "zustand";
 
-export const MAX_SAFE_CHAIN_ID = 2;
-
-function validateChainId(chainId: number): void {
-  if (
-    !Number.isInteger(chainId) ||
-    chainId <= 0 ||
-    chainId > MAX_SAFE_CHAIN_ID
-  ) {
-    throw new Error(`Invalid chainId ${chainId}`);
-  }
-}
-
 function validateAccount(account: string): string {
   // FIXME: Validate Account
   return account;
 }
 
 const DEFAULT_STATE = {
-  chainId: undefined,
+  network: undefined,
   accounts: undefined,
   activating: false,
 };
@@ -49,12 +37,6 @@ export function createHederaReactStoreAndActions(): [
   }
 
   function update(stateUpdate: HederaReactStateUpdate): void {
-    // validate chainId statically, independent of existing state
-    if (stateUpdate.chainId !== undefined) {
-      validateChainId(stateUpdate.chainId);
-    }
-
-    // validate accounts statically, independent of existing state
     if (stateUpdate.accounts !== undefined) {
       for (let i = 0; i < stateUpdate.accounts.length; i++) {
         stateUpdate.accounts[i] = validateAccount(stateUpdate.accounts[i]);
@@ -64,17 +46,17 @@ export function createHederaReactStoreAndActions(): [
     nullifier++;
 
     store.setState((existingState): HederaReactState => {
-      // determine the next chainId and accounts
-      const chainId = stateUpdate.chainId ?? existingState.chainId;
+      // determine the next network and accounts
+      const network = stateUpdate.network ?? existingState.network;
       const accounts = stateUpdate.accounts ?? existingState.accounts;
 
       // ensure that the activating flag is cleared when appropriate
       let activating = existingState.activating;
-      if (activating && chainId && accounts) {
+      if (activating && network && accounts) {
         activating = false;
       }
 
-      return { chainId, accounts, activating };
+      return { network, accounts, activating };
     });
   }
 

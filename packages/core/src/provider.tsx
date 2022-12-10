@@ -6,7 +6,7 @@ import { getPriorityConnector } from "./hooks";
 
 export type HederaContextType<T = any> = {
   connector: Connector;
-  chainId: ReturnType<HederaReactPriorityHooks["useSelectedChainId"]>;
+  network: ReturnType<HederaReactPriorityHooks["useSelectedNetwork"]>;
   accounts: ReturnType<HederaReactPriorityHooks["useSelectedAccounts"]>;
   isActivating: ReturnType<HederaReactPriorityHooks["useSelectedIsActivating"]>;
   account: ReturnType<HederaReactPriorityHooks["useSelectedAccount"]>;
@@ -48,7 +48,7 @@ export function HederaReactProvider({
   const hooks = getPriorityConnector(...connectors);
   const {
     usePriorityConnector,
-    useSelectedChainId,
+    useSelectedNetwork,
     useSelectedAccounts,
     useSelectedIsActivating,
     useSelectedAccount,
@@ -59,7 +59,7 @@ export function HederaReactProvider({
   const priorityConnector = usePriorityConnector();
   const connector = connectorOverride ?? priorityConnector;
 
-  const chainId = useSelectedChainId(connector);
+  const network = useSelectedNetwork(connector);
   const accounts = useSelectedAccounts(connector);
   const isActivating = useSelectedIsActivating(connector);
   const account = useSelectedAccount(connector);
@@ -71,7 +71,7 @@ export function HederaReactProvider({
     <HederaContext.Provider
       value={{
         connector,
-        chainId,
+        network,
         accounts,
         isActivating,
         account,

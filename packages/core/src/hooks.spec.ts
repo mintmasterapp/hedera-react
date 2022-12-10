@@ -1,13 +1,9 @@
 import type { Actions } from "@hedera-react/types";
-import { Connector } from "@hedera-react/types";
+import { Connector, Network } from "@hedera-react/types";
 import EventEmitter from "events";
 import { act, renderHook } from "@testing-library/react-hooks";
 
-import type {
-  HederaReactHooks,
-  HederaReactSelectedHooks,
-  HederaReactPriorityHooks,
-} from "./hooks";
+import type { HederaReactHooks, HederaReactPriorityHooks } from "./hooks";
 import {
   initializeConnector,
   getSelectedConnector,
@@ -43,10 +39,10 @@ describe("#initializeConnector", () => {
   });
 
   test("#useChainId", () => {
-    const { result } = renderHook(() => hooks.useChainId());
+    const { result } = renderHook(() => hooks.useNetwork());
     expect(result.current).toBe(undefined);
 
-    act(() => connector.update({ chainId: 1 }));
+    act(() => connector.update({ network: Network.HederaMainnet }));
     expect(result.current).toBe(1);
   });
 
@@ -103,16 +99,20 @@ describe("#initializeConnector", () => {
     const { result } = renderHook(() => hooks.useIsActive());
     expect(result.current).toBe(false);
 
-    act(() => connector.update({ chainId: 1, accounts: [] }));
+    act(() =>
+      connector.update({ network: Network.HederaMainnet, accounts: [] })
+    );
     expect(result.current).toEqual(true);
   });
 
   describe("#useProvider", () => {
     test("lazy loads HederaProvider and rerenders", async () => {
-      act(() => connector.update({ chainId: 1, accounts: [] }));
+      act(() =>
+        connector.update({ network: Network.HederaMainnet, accounts: [] })
+      );
 
       const { result, waitForNextUpdate } = renderHook(() =>
-        hooks.useProvider()
+        hooks.useProvider(false)
       );
       expect(result.current).toBeUndefined();
       await waitForNextUpdate();
@@ -128,8 +128,6 @@ describe("#getSelectedConnector", () => {
   let connector2: MockConnector;
   let hooks2: HederaReactHooks;
 
-  let selectedConnectorHooks: HederaReactSelectedHooks;
-
   beforeEach(() => {
     [connector, hooks] = initializeConnector(
       (actions) => new MockConnector(actions)
@@ -137,60 +135,6 @@ describe("#getSelectedConnector", () => {
     [connector2, hooks2] = initializeConnector(
       (actions) => new MockConnector2(actions)
     );
-
-    selectedConnectorHooks = getSelectedConnector(
-      [connector, hooks],
-      [connector2, hooks2]
-    );
-  });
-
-  test("isActive is false for connector", () => {
-    const {
-      result: { current: isActive },
-    } = renderHook(() => selectedConnectorHooks.useSelectedIsActive(connector));
-
-    expect(isActive).toBe(false);
-  });
-
-  test("isActive is false for connector2", () => {
-    const {
-      result: { current: isActive },
-    } = renderHook(() =>
-      selectedConnectorHooks.useSelectedIsActive(connector2)
-    );
-
-    expect(isActive).toBe(false);
-  });
-  test("connector active", () => {
-    act(() => connector.update({ chainId: 1, accounts: [] }));
-    const {
-      result: { current: isActive },
-    } = renderHook(() => selectedConnectorHooks.useSelectedIsActive(connector));
-
-    const {
-      result: { current: isActive2 },
-    } = renderHook(() =>
-      selectedConnectorHooks.useSelectedIsActive(connector2)
-    );
-
-    expect(isActive).toBe(true);
-    expect(isActive2).toBe(false);
-  });
-
-  test("connector2 active", () => {
-    act(() => connector2.update({ chainId: 1, accounts: [] }));
-    const {
-      result: { current: isActive },
-    } = renderHook(() => selectedConnectorHooks.useSelectedIsActive(connector));
-
-    const {
-      result: { current: isActive2 },
-    } = renderHook(() =>
-      selectedConnectorHooks.useSelectedIsActive(connector2)
-    );
-
-    expect(isActive).toBe(false);
-    expect(isActive2).toBe(true);
   });
 });
 
@@ -227,7 +171,9 @@ describe("#getPriorityConnector", () => {
   });
 
   test("returns first connector if it is initialized", () => {
-    act(() => connector.update({ chainId: 1, accounts: [] }));
+    act(() =>
+      connector.update({ network: Network.HederaMainnet, accounts: [] })
+    );
     const {
       result: { current: priorityConnector },
     } = renderHook(() => priorityConnectorHooks.usePriorityConnector());
@@ -242,7 +188,9 @@ describe("#getPriorityConnector", () => {
   });
 
   test("returns second connector if it is initialized", () => {
-    act(() => connector2.update({ chainId: 1, accounts: [] }));
+    act(() =>
+      connector2.update({ network: Network.HederaMainnet, accounts: [] })
+    );
     const {
       result: { current: priorityConnector },
     } = renderHook(() => priorityConnectorHooks.usePriorityConnector());
