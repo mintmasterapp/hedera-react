@@ -1,12 +1,11 @@
 import type { Actions } from "@hedera-react/types";
-import { Connector } from "@hedera-react/types";
+import { Connector, Network } from "@hedera-react/types";
 import EventEmitter3 from "eventemitter3";
 import {
   HashConnect as WHashConnect,
   HashConnectTypes,
   MessageTypes,
 } from "hashconnect";
-import { AccountId } from "@hashgraph/sdk";
 
 interface HashConnectArgs {
   actions: Actions;
@@ -14,8 +13,14 @@ interface HashConnectArgs {
   appMetaData: HashConnectTypes.AppMetadata;
 }
 
-function parseChainId(chainId: string) {
-  return chainId === "mainnet" ? 1 : 2;
+function parseNetwork(network: string) {
+  if (network === "mainnet") {
+    return Network.HederaMainnet;
+  }
+  if (network === "testnet") {
+    return Network.HederaTestnet;
+  }
+  return undefined;
 }
 
 export class HashConnect extends Connector {
@@ -34,11 +39,9 @@ export class HashConnect extends Connector {
 
   private update = (state: MessageTypes.ApprovePairing): void => {
     console.log("hashconnect state change event", state);
-    this.actions.update({ chainId: parseChainId(state.network) });
     this.actions.update({
-      accounts: state.accountIds.map((item) =>
-        AccountId.fromString(item).toSolidityAddress().toString()
-      ),
+      network: parseNetwork(state.network),
+      accounts: state.accountIds,
     });
   };
 
@@ -69,10 +72,8 @@ export class HashConnect extends Connector {
       if (!accounts.length) throw new Error("No accounts returned");
       const network = await this.provider?.hcData.pairingData[0].network;
       this.actions.update({
-        chainId: parseChainId(network),
-        accounts: accounts.map((item) =>
-          AccountId.fromString(item).toSolidityAddress().toString()
-        ),
+        network: parseNetwork(network),
+        accounts: accounts,
       });
     } catch (error) {
       cancelActivation();
