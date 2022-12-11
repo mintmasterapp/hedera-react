@@ -1,9 +1,10 @@
 import { createHederaReactStoreAndActions } from "@hedera-react/store";
-import type {
+import {
   Actions,
   Connector,
   HederaReactStore,
   HederaReactState,
+  Network,
 } from "@hedera-react/types";
 import { useMemo } from "react";
 import type { UseBoundStore } from "zustand";
@@ -22,11 +23,9 @@ export function initializeConnector<T extends Connector>(
 
   const connector = f(actions);
   const useConnector = create(store);
-
   const stateHooks = getStateHooks(useConnector);
   const derivedHooks = getDerivedHooks(stateHooks);
   const augmentedHooks = getAugmentedHooks(connector, stateHooks, derivedHooks);
-
   return [
     connector,
     {
@@ -38,7 +37,7 @@ export function initializeConnector<T extends Connector>(
   ];
 }
 
-const CHAIN_ID = ({ network }: HederaReactState) => network;
+const NETWORK_ID = ({ network }: HederaReactState) => network;
 const ACCOUNTS = ({ accounts }: HederaReactState) => accounts;
 
 const ACCOUNTS_EQUALITY_CHECKER = (
@@ -54,7 +53,7 @@ const ACTIVATING = ({ activating }: HederaReactState) => activating;
 
 function getStateHooks(useConnector: UseBoundStore<HederaReactStore>) {
   function useNetwork(): HederaReactState["network"] {
-    return useConnector(CHAIN_ID);
+    return useConnector(NETWORK_ID);
   }
 
   function useAccounts(): HederaReactState["accounts"] {
@@ -69,7 +68,9 @@ function getStateHooks(useConnector: UseBoundStore<HederaReactStore>) {
 }
 
 function computeIsActive({ network, accounts, activating }: HederaReactState) {
-  return Boolean(network && accounts && !activating);
+  const isNetworkAvailable =
+    network === Network.HederaMainnet || network === Network.HederaTestnet;
+  return Boolean(isNetworkAvailable && accounts && !activating);
 }
 
 function getDerivedHooks({

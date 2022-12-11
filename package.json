@@ -1,5 +1,5 @@
 {
-  "private": true,
+  "private": false,
   "name": "hedera-react",
   "scripts": {
     "bootstrap": "lerna bootstrap",
@@ -30,5 +30,5 @@
     "@hedera-react/core": "^0.0.5",
     "@hedera-react/flash": "^0.0.1"
   },
-  "version": "0.1.0"
+  "version": "0.1.2-alpha.1"
 }

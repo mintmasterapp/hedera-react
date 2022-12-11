@@ -4,11 +4,7 @@ import EventEmitter from "events";
 import { act, renderHook } from "@testing-library/react-hooks";
 
 import type { HederaReactHooks, HederaReactPriorityHooks } from "./hooks";
-import {
-  initializeConnector,
-  getSelectedConnector,
-  getPriorityConnector,
-} from "./hooks";
+import { initializeConnector, getPriorityConnector } from "./hooks";
 
 class MockProvider extends EventEmitter {
   request = jest.fn();
