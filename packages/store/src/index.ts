@@ -6,11 +6,6 @@ import {
 } from "@hedera-react/types";
 import { createStore } from "zustand";
 
-function validateAccount(account: string): string {
-  // FIXME: Validate Account
-  return account;
-}
-
 const DEFAULT_STATE = {
   network: undefined,
   accounts: undefined,
@@ -37,12 +32,6 @@ export function createHederaReactStoreAndActions(): [
   }
 
   function update(stateUpdate: HederaReactStateUpdate): void {
-    if (stateUpdate.accounts !== undefined) {
-      for (let i = 0; i < stateUpdate.accounts.length; i++) {
-        stateUpdate.accounts[i] = validateAccount(stateUpdate.accounts[i]);
-      }
-    }
-
     nullifier++;
 
     store.setState((existingState): HederaReactState => {

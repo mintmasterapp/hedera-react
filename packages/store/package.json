@@ -24,6 +24,6 @@
   },
   "dependencies": {
     "@hedera-react/types": "^0.1.1-alpha.4",
-    "zustand": "^4.1.3"
+    "zustand": "^4.0.0-rc.0"
   }
 }

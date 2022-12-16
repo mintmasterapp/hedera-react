@@ -5,6 +5,7 @@ import {
   HederaReactStore,
   HederaReactState,
   Network,
+  Provider,
 } from "@hedera-react/types";
 import { useMemo } from "react";
 import type { UseBoundStore } from "zustand";
@@ -102,7 +103,7 @@ function getAugmentedHooks<T extends Connector>(
   { useNetwork }: ReturnType<typeof getStateHooks>,
   { useIsActive }: ReturnType<typeof getDerivedHooks>
 ) {
-  function useProvider<T>(enable: boolean): T | undefined {
+  function useProvider<T extends Provider>(enable = true): T | undefined {
     const isActive = useIsActive();
     const network = useNetwork();
 
@@ -169,7 +170,9 @@ export function getSelectedConnector(
     return values[getIndex(connector)];
   }
 
-  function useSelectedProvider<T>(connector: Connector): T | undefined {
+  function useSelectedProvider<T extends Provider>(
+    connector: Connector
+  ): T | undefined {
     const index = getIndex(connector);
     const values = initializedConnectors.map(([, { useProvider }], i) =>
       useProvider<T>(index === i)

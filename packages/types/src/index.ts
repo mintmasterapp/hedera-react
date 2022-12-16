@@ -1,4 +1,5 @@
 import type { StoreApi } from "zustand";
+import type { EventEmitter } from "node:events";
 
 export enum Network {
   HederaMainnet,
@@ -33,13 +34,23 @@ export interface Actions {
   resetState: () => void;
 }
 
-export interface RequestArguments {
-  readonly method: string;
-  readonly params?: readonly unknown[] | object;
+export interface SignTransArguments {
+  readonly account: string;
+  readonly transBytes: Buffer;
+}
+
+export interface SignMessageArguments {
+  readonly account: string;
+  readonly message: string;
+}
+
+export interface Provider extends EventEmitter {
+  signTransaction(args: SignTransArguments): Promise<unknown>;
+  signMessage(args: SignMessageArguments): Promise<unknown>;
 }
 
 export abstract class Connector {
-  public provider?: unknown;
+  public provider?: Provider;
   protected readonly actions: Actions;
   protected onError?: (error: Error) => void;
 
