@@ -1,5 +1,5 @@
 import FlashCard from "../components/FlashCard";
-// import HashPackCard from "../components/HashPackCard";
+import HashPackCard from "../components/HashPackCard";
 import { Header } from "../components/Header";
 import Pager from "../components/Pager";
 
@@ -8,6 +8,7 @@ export default function Home() {
     <Pager>
       <Header />
       <FlashCard />
+      <HashPackCard />
     </Pager>
   );
 }

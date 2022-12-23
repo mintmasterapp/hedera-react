@@ -21,14 +21,10 @@
     "@types/react": "^18.0.5",
     "jest": "^27.5.1",
     "lerna": "^4.0.0",
-    "react": "^18.0.0",
+    "react": "18.2.0",
     "react-test-renderer": "^18.0.0",
     "ts-jest": "^27.1.4",
     "typescript": "^4.6.3"
-  },
-  "dependencies": {
-    "@hedera-react/core": "^0.0.5",
-    "@hedera-react/flash": "^0.0.1"
   },
   "version": "0.1.2-alpha.1"
 }

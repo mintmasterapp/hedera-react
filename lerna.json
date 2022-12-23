@@ -2,5 +2,5 @@
   "version": "independent",
   "packages": ["packages/*"],
   "npmClient": "yarn",
-  "ignoreChanges": ["**/*.md", "**/*.spec.ts", "packages/example-next"]
+  "ignoreChanges": ["**/*.md", "**/*.spec.ts"]
 }

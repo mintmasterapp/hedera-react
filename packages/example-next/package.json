@@ -6,27 +6,17 @@
     "start": "next dev"
   },
   "dependencies": {
-    "@hedera-react/core": "^0.1.1-alpha.11",
-    "@hedera-react/flash": "^0.1.1-alpha.7",
-    "@hedera-react/hashconnect": "^0.1.1-alpha.8",
-    "@hedera-react/store": "^0.1.1-alpha.5",
-    "@hedera-react/types": "^0.1.1-alpha.4",
+    "@hedera-react/core": "^0.1.2-alpha.3",
+    "@hedera-react/flash": "^0.1.2-alpha.4",
+    "@hedera-react/hashconnect": "^0.1.2-alpha.5",
+    "@hedera-react/store": "^0.1.2-alpha.2",
+    "@hedera-react/types": "^0.1.2-alpha.1",
     "next": "13.0.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "url-parse": "^1.5.10"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@types/node": "18.11.7",
-    "@types/qrcode": "^1.5.0",
-    "@types/react": "18.0.24",
-    "@types/react-dom": "18.0.8",
-    "@types/url-parse": "^1.4.8",
-    "autoprefixer": "^10.4.13",
-    "eslint": "8.26.0",
-    "eslint-config-next": "13.0.0",
     "postcss": "^8.4.18",
     "tailwindcss": "^3.2.1",
-    "typescript": "4.8.4"
+    "autoprefixer": "10.4.13"
   }
 }
