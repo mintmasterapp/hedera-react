@@ -19,10 +19,7 @@ function LinkDisplay(props: LinkDisplayProps) {
         <ConnectButton
           name="Connect"
           onClick={React.useCallback(() => {
-            saveMobileLinkInfo({
-              name: "Unknown",
-              href: props.uri,
-            });
+            window.open(`flash://connect/?${props.uri}`, "");
           }, [])}
         />
       </div>

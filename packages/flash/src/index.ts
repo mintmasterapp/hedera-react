@@ -3,6 +3,7 @@ import type { IClientMeta } from "@walletconnect/types";
 import WalletConnect from "@walletconnect/client";
 import { Connector } from "@hedera-react/types";
 import EventEmitter3 from "eventemitter3";
+import { isMobile } from "@walletconnect/legacy-utils";
 import qrcodeModal from "./modal";
 
 interface WalletConnectArgs {
@@ -186,6 +187,7 @@ export class FlashConnect extends Connector {
         },
       ],
     };
+    if (isMobile()) window.open("flash://");
     const data = await this.provider?.sendCustomRequest(request);
     return data;
   }
