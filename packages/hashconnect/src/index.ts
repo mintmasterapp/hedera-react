@@ -121,10 +121,9 @@ export class HashConnect extends Connector {
 
     try {
       await this.isomorphicInitialize(desiredNetwork);
-      if (!this.isFoundExtension) {
-        throw Error("Not found HashPack Extension");
+      if (this.isFoundExtension) {
+        this.provider?.connectToLocalWallet();
       }
-      this.provider?.connectToLocalWallet();
     } catch (error) {
       cancelActivation();
       throw error;
