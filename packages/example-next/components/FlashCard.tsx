@@ -30,7 +30,7 @@ export default function FlashCard() {
 
   const sendHbar = (account: string, message: string) => {
     flashConnector
-      .signMessage(account, "hello its nasim here")
+      .sendTransaction(account, Buffer.from(account))
       .then((result) => console.log(result))
       .catch((err) => console.log(err));
   };
