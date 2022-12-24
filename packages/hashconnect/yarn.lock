@@ -79,6 +79,13 @@
     protobufjs "^6.11.3"
     utf8 "^3.0.0"
 
+"@hedera-react/types@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@hedera-react/types/-/types-0.2.1.tgz#e415b9b46a5c87e3c687ac54b6fefd45fbf68ca1"
+  integrity sha512-GQzs31utCpiW2d7DSVBXWJVYGrvzGAUxW2TZue08ICyJgajKddWt1UWEa7H/jecCb28UlYaczUZAGaSeq9Zgyw==
+  dependencies:
+    zustand "^4.1.5"
+
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@protobufjs/aspromise/-/aspromise-1.1.2.tgz#9b8b0cc663d669a7d8f6f5d0893a14d348f30fbf"
@@ -495,6 +502,11 @@ uint8arrays@^3.0.0:
   dependencies:
     multiformats "^9.4.2"
 
+use-sync-external-store@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz#7dbefd6ef3fe4e767a0cf5d7287aacfb5846928a"
+  integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==
+
 utf8@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/utf8/-/utf8-3.0.0.tgz#f052eed1364d696e769ef058b183df88c87f69d1"
@@ -546,3 +558,10 @@ yargs@^16.2.0:
     string-width "^4.2.0"
     y18n "^5.0.5"
     yargs-parser "^20.2.2"
+
+zustand@^4.1.5:
+  version "4.1.5"
+  resolved "https://registry.yarnpkg.com/zustand/-/zustand-4.1.5.tgz#7402b511f5b23ccb0f9ba6d20ae01ec817e16eb6"
+  integrity sha512-PsdRT8Bvq22Yyh1tvpgdHNE7OAeFKqJXUxtJvj1Ixw2B9O2YZ1M34ImQ+xyZah4wZrR4lENMoDUutKPpyXCQ/Q==
+  dependencies:
+    use-sync-external-store "1.2.0"
