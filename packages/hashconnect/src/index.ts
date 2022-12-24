@@ -140,4 +140,26 @@ export class HashConnect extends Connector {
     this.eagerConnection = undefined;
     this.actions.resetState();
   }
+
+  public async sendTransaction(
+    account: string,
+    transaction: Buffer
+  ): Promise<unknown> {
+    if (!this.provider) return;
+    const request = {
+      topic: this.provider?.hcData.topic,
+      byteArray: transaction,
+      metadata: {
+        accountToSign: account,
+        returnTransaction: true,
+        hideNft: false,
+      },
+    };
+    const res = await this.provider?.sendTransaction(request.topic, request);
+    return res;
+  }
+
+  public async signMessage(account: string, message: string): Promise<unknown> {
+    return "Not Implemented yet";
+  }
 }
