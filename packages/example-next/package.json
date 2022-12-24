@@ -1,15 +1,15 @@
 {
   "name": "example-next",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "start": "next dev"
   },
   "dependencies": {
-    "@hedera-react/core": "^0.2.5",
-    "@hedera-react/flash": "^0.2.6",
-    "@hedera-react/hashconnect": "^0.2.7",
-    "@hedera-react/store": "^0.2.4",
+    "@hedera-react/core": "^0.2.6",
+    "@hedera-react/flash": "^0.2.7",
+    "@hedera-react/hashconnect": "^0.2.8",
+    "@hedera-react/store": "^0.2.5",
     "@hedera-react/types": "^0.2.1",
     "next": "13.0.0",
     "react-dom": "18.2.0"
