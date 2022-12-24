@@ -154,4 +154,39 @@ export class FlashConnect extends Connector {
     this.eagerConnection = undefined;
     this.actions.resetState();
   }
+
+  public async sendTransaction(
+    account: string,
+    transaction: Buffer
+  ): Promise<unknown> {
+    const request = {
+      id: Math.random() * (2000 - 500) + 500,
+      jsonrpc: "2.0",
+      method: "hedera_sendTransaction",
+      params: [
+        {
+          from: account,
+          data: transaction.toString("hex"),
+        },
+      ],
+    };
+    const data = await this.provider?.sendCustomRequest(request);
+    return data;
+  }
+
+  public async signMessage(account: string, message: string): Promise<unknown> {
+    const request = {
+      id: Math.random() * (2000 - 500) + 500,
+      jsonrpc: "2.0",
+      method: "hedera_signMessage",
+      params: [
+        {
+          from: account,
+          data: message,
+        },
+      ],
+    };
+    const data = await this.provider?.sendCustomRequest(request);
+    return data;
+  }
 }

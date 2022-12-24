@@ -11,6 +11,14 @@ interface HashConnectArgs {
   actions: Actions;
   onError?: (error: Error) => void;
   appMetaData: HashConnectTypes.AppMetadata;
+  defaultNetwork: Network;
+}
+
+enum HashConnectConnectionState {
+  Connecting = "Connecting",
+  Connected = "Connected",
+  Disconnected = "Disconnected",
+  Paired = "Paired",
 }
 
 function parseNetwork(network: string) {
@@ -23,43 +31,63 @@ function parseNetwork(network: string) {
   return undefined;
 }
 
+function parseHashConnectNetwork(network: Network) {
+  if (network === Network.HederaMainnet) {
+    return "mainnet";
+  }
+  if (network === Network.HederaTestnet) {
+    return "testnet";
+  }
+  return "previewnet";
+}
+
 export class HashConnect extends Connector {
   public provider?: WHashConnect;
   public readonly events = new EventEmitter3();
   public readonly appMetaData: HashConnectTypes.AppMetadata;
   private isFoundExtension: boolean;
+  private readonly defaultNetwork: Network;
 
   private eagerConnection?: Promise<void>;
 
-  constructor({ actions, onError, appMetaData }: HashConnectArgs) {
+  constructor({
+    actions,
+    onError,
+    appMetaData,
+    defaultNetwork,
+  }: HashConnectArgs) {
     super(actions, onError);
     this.appMetaData = appMetaData;
     this.isFoundExtension = false;
+    this.defaultNetwork = defaultNetwork || Network.HederaMainnet;
   }
 
   private update = (state: MessageTypes.ApprovePairing): void => {
-    console.log("hashconnect state change event", state);
     this.actions.update({
       network: parseNetwork(state.network),
       accounts: state.accountIds,
     });
   };
 
-  private disconnect = (state: any): void => {
-    console.log("hashconnect state change event", state);
-    // this.actions.resetState();
+  private changeState = (state: HashConnectConnectionState): void => {
+    if (state === HashConnectConnectionState.Disconnected) {
+      this.actions.resetState();
+    }
   };
 
-  public async isomorphicInitialize(): Promise<void> {
+  public async isomorphicInitialize(
+    desiredNetwork = this.defaultNetwork
+  ): Promise<void> {
     if (this.eagerConnection) return;
     return (this.eagerConnection = import("hashconnect").then(async (m) => {
       this.provider = new m.HashConnect() as unknown as WHashConnect;
-      await this.provider.init(this.appMetaData, "mainnet");
+      const net = parseHashConnectNetwork(desiredNetwork);
+      await this.provider.init(this.appMetaData, net);
       this.provider.foundExtensionEvent.on((data) => {
         this.isFoundExtension = true;
       });
       this.provider.pairingEvent.on(this.update);
-      this.provider.connectionStatusChangeEvent.on(this.disconnect);
+      this.provider.connectionStatusChangeEvent.on(this.changeState);
     }));
   }
 
@@ -81,10 +109,7 @@ export class HashConnect extends Connector {
     }
   }
 
-  public async activate(): Promise<void> {
-    if (!this.isFoundExtension) {
-      throw Error("Not found HashPack Extension");
-    }
+  public async activate(desiredNetwork?: Network): Promise<void> {
     if (
       this.provider?.hcData.pairingData &&
       this.provider?.hcData.pairingData.length > 0
@@ -95,7 +120,10 @@ export class HashConnect extends Connector {
     const cancelActivation = this.actions.startActivation();
 
     try {
-      await this.isomorphicInitialize();
+      await this.isomorphicInitialize(desiredNetwork);
+      if (!this.isFoundExtension) {
+        throw Error("Not found HashPack Extension");
+      }
       this.provider?.connectToLocalWallet();
     } catch (error) {
       cancelActivation();

@@ -9,6 +9,7 @@ export default function HashPackCard() {
   const active = useIsActive();
   const account = useAccount();
   const network = useNetwork();
+  const activating = useIsActivating();
 
   useEffect(() => {
     if (hashConnector.connectEagerly) {

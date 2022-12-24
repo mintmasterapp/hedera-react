@@ -3,12 +3,15 @@ import { useEffect, useState } from "react";
 import { flashConnector, hooks } from "../connectors/flashConnector";
 import Button from "./Button";
 
-const { useAccount, useIsActive, useNetwork } = hooks;
+const { useAccount, useIsActive, useNetwork, useIsActivating } = hooks;
 
 export default function FlashCard() {
   const active = useIsActive();
   const account = useAccount();
   const network = useNetwork();
+  const activating = useIsActivating();
+
+  console.log(active, account, network, activating);
 
   useEffect(() => {
     if (flashConnector.connectEagerly) {
@@ -18,6 +21,20 @@ export default function FlashCard() {
     }
   }, []);
 
+  const signMessage = (account: string, message: string) => {
+    flashConnector
+      .signMessage(account, "hello its nasim here")
+      .then((result) => console.log(result))
+      .catch((err) => console.log(err));
+  };
+
+  const sendHbar = (account: string, message: string) => {
+    flashConnector
+      .signMessage(account, "hello its nasim here")
+      .then((result) => console.log(result))
+      .catch((err) => console.log(err));
+  };
+
   return (
     <div className="py-8 bg-black rounded-2xl my-5 px-8">
       <div className="flex justify-between items-center">
@@ -26,6 +43,13 @@ export default function FlashCard() {
           <p className="text-white mt-2">Connect Hedera App without pain</p>
           {account && <p className="mt-2 text-green-500">account:{account}</p>}
           {network && <p className="mt-2 text-green-500">network:{network}</p>}
+          <br />
+          {active && account && (
+            <div className="flex justify-start items-center gap-3">
+              <Button name="Send Hbar" onClick={() => {}} />
+              <Button name="Sign Message" onClick={() => {}} />
+            </div>
+          )}
         </div>
         <Button
           name={active ? "Disconnect" : "Connect"}

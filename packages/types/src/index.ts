@@ -3,6 +3,7 @@ import type { StoreApi } from "zustand";
 export enum Network {
   HederaMainnet,
   HederaTestnet,
+  Previewnet,
 }
 
 export interface HederaReactState {
@@ -54,4 +55,14 @@ export abstract class Connector {
   public connectEagerly?(...args: unknown[]): Promise<unknown> | unknown;
 
   public deactivate?(...args: unknown[]): Promise<unknown> | unknown;
+
+  public sendTransaction?(
+    account: string,
+    transaction: Buffer
+  ): Promise<unknown> | unknown;
+
+  public signMessage?(
+    account: string,
+    message: string
+  ): Promise<unknown> | unknown;
 }

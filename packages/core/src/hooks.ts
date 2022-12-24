@@ -71,7 +71,7 @@ function getStateHooks(useConnector: UseBoundStore<HederaReactStore>) {
 function computeIsActive({ network, accounts, activating }: HederaReactState) {
   const isNetworkAvailable =
     network === Network.HederaMainnet || network === Network.HederaTestnet;
-  return Boolean(isNetworkAvailable && accounts && !activating);
+  return Boolean(isNetworkAvailable && accounts);
 }
 
 function getDerivedHooks({
