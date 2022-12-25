@@ -11,7 +11,7 @@ interface HashConnectArgs {
   actions: Actions;
   onError?: (error: Error) => void;
   appMetaData: HashConnectTypes.AppMetadata;
-  defaultNetwork: Network;
+  defaultNetwork?: Network;
 }
 
 enum HashConnectConnectionState {

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { flashConnector, hooks } from "../connectors/flashConnector";
 import Button from "./Button";
 
@@ -23,7 +22,7 @@ export default function FlashCard() {
 
   const signMessage = (account: string, message: string) => {
     flashConnector
-      .signMessage(account, "hello its nasim here")
+      .signMessage(account, message)
       .then((result) => console.log(result))
       .catch((err) => console.log(err));
   };
@@ -46,7 +45,12 @@ export default function FlashCard() {
           <br />
           {active && account && (
             <div className="flex justify-start items-center gap-3">
-              <Button name="Send Hbar" onClick={() => {}} />
+              <Button
+                name="Send Hbar"
+                onClick={() =>
+                  signMessage(account, "hello there please sign my message")
+                }
+              />
               <Button name="Sign Message" onClick={() => {}} />
             </div>
           )}
