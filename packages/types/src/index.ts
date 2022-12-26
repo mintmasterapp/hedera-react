@@ -56,13 +56,7 @@ export abstract class Connector {
 
   public deactivate?(...args: unknown[]): Promise<unknown> | unknown;
 
-  public sendTransaction?(
-    account: string,
-    transaction: Buffer
-  ): Promise<unknown> | unknown;
+  public sendTransaction?(...args: unknown[]): Promise<unknown> | unknown;
 
-  public signMessage?(
-    account: string,
-    message: string
-  ): Promise<unknown> | unknown;
+  public signMessage?(...args: unknown[]): Promise<unknown> | unknown;
 }

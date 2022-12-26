@@ -141,20 +141,13 @@ export class HashConnect extends Connector {
   }
 
   public async sendTransaction(
-    account: string,
-    transaction: Buffer
+    transaction: MessageTypes.Transaction
   ): Promise<unknown> {
     if (!this.provider) return;
-    const request = {
-      topic: this.provider?.hcData.topic,
-      byteArray: transaction,
-      metadata: {
-        accountToSign: account,
-        returnTransaction: true,
-        hideNft: false,
-      },
-    };
-    const res = await this.provider?.sendTransaction(request.topic, request);
+    const res = await this.provider?.sendTransaction(
+      transaction.topic,
+      transaction
+    );
     return res;
   }
 
