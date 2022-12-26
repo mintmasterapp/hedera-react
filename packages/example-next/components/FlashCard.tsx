@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { AccountId } from "@hashgraph/sdk";
 import { flashConnector, hooks } from "../connectors/flashConnector";
 import Button from "./Button";
 
@@ -9,8 +10,8 @@ export default function FlashCard() {
   const account = useAccount();
   const network = useNetwork();
   const activating = useIsActivating();
-
-  console.log(active, account, network, activating);
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (flashConnector.connectEagerly) {
@@ -21,55 +22,68 @@ export default function FlashCard() {
   }, []);
 
   const signMessage = (account: string, message: string) => {
+    setLoading(true);
     flashConnector
       .signMessage(account, message)
-      .then((result) => console.log(result))
-      .catch((err) => console.log(err));
+      .then((result: any) => {
+        setResult(result);
+        setLoading(false);
+      })
+      .catch((err: any) => {
+        setLoading(false);
+      });
   };
 
-  const sendHbar = (account: string, message: string) => {
-    flashConnector
-      .sendTransaction(account, Buffer.from(account))
-      .then((result) => console.log(result))
-      .catch((err) => console.log(err));
+  const connect = () => {
+    if (active) {
+      if (flashConnector?.deactivate) {
+        void flashConnector.deactivate();
+      } else {
+        void flashConnector.resetState();
+      }
+    } else {
+      flashConnector.activate().catch((err: any) => {
+        console.log("err", err);
+      });
+    }
   };
 
   return (
     <div className="py-8 bg-black rounded-2xl my-5 px-8">
-      <div className="flex justify-between items-center">
-        <div>
+      <div className="flex justify-between items-center flex-wrap">
+        <div className="w-full mb-10">
           <p className="text-white text-4xl font-semibold">Flash Wallet</p>
-          <p className="text-white mt-2">Connect Hedera App without pain</p>
-          {account && <p className="mt-2 text-green-500">account:{account}</p>}
+          {account && (
+            <p className="mt-2 text-green-500">
+              account:{AccountId.fromSolidityAddress(account).toString()}
+            </p>
+          )}
           {network && <p className="mt-2 text-green-500">network:{network}</p>}
           <br />
           {active && account && (
             <div className="flex justify-start items-center gap-3">
               <Button
-                name="Send Hbar"
+                name="Sign Message"
                 onClick={() =>
-                  signMessage(account, "hello there please sign my message")
+                  signMessage(account, "hello there! Sign message please")
                 }
+                loading={loading}
+                disabled={loading}
               />
-              <Button name="Sign Message" onClick={() => {}} />
             </div>
+          )}
+
+          {result && (
+            <p className="mt-10 text-white max-w-full">
+              Result: {JSON.stringify(result)}
+            </p>
           )}
         </div>
         <Button
           name={active ? "Disconnect" : "Connect"}
-          onClick={() => {
-            if (active) {
-              if (flashConnector?.deactivate) {
-                void flashConnector.deactivate();
-              } else {
-                void flashConnector.resetState();
-              }
-            } else {
-              flashConnector.activate().catch((err) => {
-                console.log("err", err);
-              });
-            }
-          }}
+          onClick={connect}
+          loading={activating}
+          disabled={activating}
         />
       </div>
     </div>

@@ -5,6 +5,7 @@ import {
   HederaReactStateUpdate,
 } from "@hedera-react/types";
 import { createStore } from "zustand";
+import { Network } from "@hedera-react/types";
 
 const DEFAULT_STATE = {
   network: undefined,
@@ -41,7 +42,11 @@ export function createHederaReactStoreAndActions(): [
 
       // ensure that the activating flag is cleared when appropriate
       let activating = existingState.activating;
-      if (activating && network && accounts) {
+      const isNetworkAvailable =
+        network === Network.HederaMainnet ||
+        network === Network.HederaTestnet ||
+        network === Network.Previewnet;
+      if (activating && isNetworkAvailable && accounts) {
         activating = false;
       }
 
