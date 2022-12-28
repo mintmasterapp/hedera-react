@@ -75,7 +75,7 @@ Activating the wallet
 
 ```
 
-(https://i.ibb.co/L0DxjxJ/flash-wallet-ss.png)
+![image](https://i.ibb.co/L0DxjxJ/flash-wallet-ss.png)
 
 Disconnecting from the wallet
 
