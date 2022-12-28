@@ -37,7 +37,7 @@ describe("#initializeConnector", () => {
     );
   });
 
-  test("#useChainId", () => {
+  test("#useNetwork", () => {
     const { result } = renderHook(() => hooks.useNetwork());
     expect(result.current).toBe(undefined);
     act(() => connector.update({ network: Network.HederaMainnet }));

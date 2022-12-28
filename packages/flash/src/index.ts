@@ -18,6 +18,12 @@ const bridge = "https://bridge.walletconnect.org";
 
 export const URI_AVAILABLE = "URI_AVAILABLE";
 
+function getRandomInt() {
+  const min = Math.ceil(1000);
+  const max = Math.floor(5000);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function parseChainId(chainId: string | number) {
   return typeof chainId === "string" ? Number.parseInt(chainId) : chainId;
 }
@@ -161,7 +167,7 @@ export class FlashConnect extends Connector {
     transaction: Buffer
   ): Promise<unknown> {
     const request = {
-      id: Math.random() * (2000 - 500) + 500,
+      id: getRandomInt(),
       jsonrpc: "2.0",
       method: "hedera_sendTransaction",
       params: [
@@ -177,7 +183,7 @@ export class FlashConnect extends Connector {
 
   public async signMessage(account: string, message: string): Promise<unknown> {
     const request = {
-      id: Math.random() * (2000 - 500) + 500,
+      id: getRandomInt(),
       jsonrpc: "2.0",
       method: "hedera_signMessage",
       params: [

@@ -1,9 +1,22 @@
 import { useEffect, useState } from "react";
-import { AccountId } from "@hashgraph/sdk";
+import {
+  AccountId,
+  TransactionId,
+  TransferTransaction,
+  Hbar,
+} from "@hashgraph/sdk";
 import { flashConnector, hooks } from "../connectors/flashConnector";
 import Button from "./Button";
 
 const { useAccount, useIsActive, useNetwork, useIsActivating } = hooks;
+
+export const makeTransBytes = async (trans: any, accountId: string) => {
+  const transId = TransactionId.generate(accountId);
+  trans.setTransactionId(transId);
+  trans.setNodeAccountIds([new AccountId(3)]);
+  await trans.freeze();
+  return Buffer.from(trans.toBytes());
+};
 
 export default function FlashCard() {
   const active = useIsActive();
@@ -25,6 +38,29 @@ export default function FlashCard() {
     setLoading(true);
     flashConnector
       .signMessage(account, message)
+      .then((result: any) => {
+        setResult(result);
+        setLoading(false);
+      })
+      .catch((err: any) => {
+        setLoading(false);
+      });
+  };
+
+  const sendHbar = async () => {
+    if (!account) return;
+    const currentAccount = AccountId.fromSolidityAddress(account);
+    const transaction = new TransferTransaction()
+      .addHbarTransfer(currentAccount, new Hbar(-1))
+      .addHbarTransfer("0.0.1234", new Hbar(1));
+
+    const makeBytes = await makeTransBytes(
+      transaction,
+      currentAccount.toString()
+    );
+
+    flashConnector
+      .sendTransaction(account, makeBytes)
       .then((result: any) => {
         setResult(result);
         setLoading(false);
@@ -67,6 +103,12 @@ export default function FlashCard() {
                 onClick={() =>
                   signMessage(account, "hello there! Sign message please")
                 }
+                loading={loading}
+                disabled={loading}
+              />
+              <Button
+                name="Sign Message"
+                onClick={sendHbar}
                 loading={loading}
                 disabled={loading}
               />
