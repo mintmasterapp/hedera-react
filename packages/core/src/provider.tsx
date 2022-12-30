@@ -85,13 +85,13 @@ export function HederaReactProvider({
   );
 }
 
-export function useWeb3React<T>(): HederaContextType<T> {
+export function useHederaReact<T>(): HederaContextType<T> {
   const context = useContext(
     HederaContext as Context<HederaContextType<T> | undefined>
   );
   if (!context)
     throw Error(
-      "useWeb3React can only be used within the Web3ReactProvider component"
+      "useHederaReact can only be used within the HederaReactProvider component"
     );
   return context;
 }
