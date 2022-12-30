@@ -3,7 +3,7 @@
   "keywords": [
     "hedera-react"
   ],
-  "version": "0.2.9",
+  "version": "0.2.10",
   "author": "Nasim Akhtar <devnasim18@gmail.com>",
   "license": "GPL-3.0-or-later",
   "repository": "github:mintmasterapp/hedera-react",
@@ -27,9 +27,9 @@
     "@walletconnect/client": "^1.8.0",
     "@walletconnect/legacy-utils": "^2.0.0-rc.0",
     "copy-to-clipboard": "3.3.3",
+    "eventemitter3": "5.0.0",
     "qrcode": "^1.5.1",
-    "react-dom": "18.2.0",
-    "eventemitter3": "5.0.0"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
     "@types/qrcode": "^1.5.0",
