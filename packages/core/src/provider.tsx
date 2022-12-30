@@ -42,7 +42,7 @@ export function HederaReactProvider({
     })
   )
     throw new Error(
-      "The connectors prop passed to Web3ReactProvider must be referentially static. If connectors is changing, try providing a key prop to Web3ReactProvider that changes every time connectors changes."
+      "The connectors prop passed to HederaReactProvider must be referentially static. If connectors is changing, try providing a key prop to Web3ReactProvider that changes every time connectors changes."
     );
 
   const hooks = getPriorityConnector(...connectors);
