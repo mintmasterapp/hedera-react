@@ -1,6 +1,6 @@
 {
   "name": "example-next",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "private": true,
   "scripts": {
     "start": "next dev"
@@ -11,7 +11,7 @@
     "@hedera-react/hashconnect": "^0.2.9",
     "@hedera-react/store": "^0.2.4",
     "@hedera-react/types": "^0.2.2",
-    "@hedera-react/blade": "",
+    "@hedera-react/blade": "0.3.0-alpha.1",
     "next": "13.0.0",
     "react-dom": "18.2.0"
   },

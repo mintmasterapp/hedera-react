@@ -88,7 +88,7 @@ export default function FlashCard() {
     <div className="py-8 bg-black rounded-2xl my-5 px-8">
       <div className="flex justify-between items-center flex-wrap">
         <div className="w-full mb-10">
-          <p className="text-white text-4xl font-semibold">Flash Wallet</p>
+          <p className="text-white text-4xl font-semibold">Blade Extension</p>
           {account && (
             <p className="mt-2 text-green-500">
               account:{AccountId.fromSolidityAddress(account).toString()}

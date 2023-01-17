@@ -26,20 +26,11 @@ export class Blade extends Connector {
     this.dAppCode = dAppCode || undefined;
   }
 
-  private async isomorphicInitialize(
-    desiredNetwork = this.defaultNetwork
-  ): Promise<void> {
+  private async isomorphicInitialize(): Promise<void> {
     if (this.eagerConnection) return;
     return (this.eagerConnection = import("@bladelabs/blade-web3.js").then(
       async (m) => {
-        this.provider = new m.default.BladeSigner();
-        await this.provider.createSession({
-          network:
-            desiredNetwork === Network.HederaMainnet
-              ? HederaNetwork.Mainnet
-              : HederaNetwork.Testnet,
-          dAppCode: this.dAppCode,
-        });
+        this.provider = new m.BladeSigner();
       }
     ));
   }
@@ -48,11 +39,7 @@ export class Blade extends Connector {
     const cancelActivation = this.actions.startActivation();
     try {
       await this.isomorphicInitialize();
-      if (!this.provider) throw Error("No existing connection");
-      const account = await this.provider?.getAccountId();
-      if (!account) throw new Error("No accounts returned");
-      const network = await this.provider?.getNetwork();
-      console.log(network, account);
+      cancelActivation();
     } catch (error) {
       cancelActivation();
       throw error;
@@ -60,11 +47,18 @@ export class Blade extends Connector {
   }
 
   public async activate(desiredNetwork?: Network): Promise<void> {
-    const cancelActivation = this.actions.startActivation();
+    // const cancelActivation = this.actions.startActivation();
     try {
-      await this.isomorphicInitialize(desiredNetwork);
+      await this.isomorphicInitialize();
+      await this.provider?.createSession({
+        network:
+          desiredNetwork === Network.HederaMainnet
+            ? HederaNetwork.Mainnet
+            : HederaNetwork.Testnet,
+        dAppCode: this.dAppCode,
+      });
     } catch (error) {
-      cancelActivation();
+      // cancelActivation();
       throw error;
     }
   }
