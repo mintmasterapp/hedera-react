@@ -1,0 +1,29 @@
+{
+  "name": "@hedera-react/blade",
+  "keywords": [
+    "hedera-react"
+  ],
+  "version": "0.2.9",
+  "author": "Nasim Akhtar <devnasim18@gmail.com>",
+  "license": "GPL-3.0-or-later",
+  "repository": "github:mintmasterapp/hedera-react",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist/*"
+  ],
+  "type": "commonjs",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "exports": "./dist/index.js",
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "npx tsc",
+    "start": "tsc --watch"
+  },
+  "dependencies": {
+    "@hedera-react/types": "^0.2.2",
+    "@bladelabs/blade-web3.js": "0.9.13"
+  }
+}
