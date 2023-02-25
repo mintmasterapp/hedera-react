@@ -16,7 +16,9 @@ interface WalletConnectArgs {
 
 const bridge = "https://bridge.walletconnect.org";
 
-export const URI_AVAILABLE = "URI_AVAILABLE";
+export const URI_AVAILABLE_EVENT = "URI_AVAILABLE";
+export const WALLET_LOAD_EVENT = "WALLET_LOAD_EVENT";
+export const WALLET_DISCONNECT_EVENT = "WALLET_DISCONNECT_EVENT";
 
 function getRandomInt() {
   const min = Math.ceil(1000);
@@ -68,6 +70,7 @@ export class FlashConnect extends Connector {
     const { accounts, chainId } = payload.params[0];
     const network = parseNetwork(chainId);
     this.actions.update({ network, accounts });
+    this.events.emit(WALLET_LOAD_EVENT, { accounts, network });
     qrcodeModal.close();
   };
 
@@ -75,11 +78,12 @@ export class FlashConnect extends Connector {
     if (error) {
       this.onError?.(error);
     }
+    this.events.emit(WALLET_DISCONNECT_EVENT, { success: true });
     this.actions.resetState();
   };
 
   private URIListener = (uri: string): void => {
-    this.events.emit(URI_AVAILABLE, uri);
+    this.events.emit(URI_AVAILABLE_EVENT, uri);
   };
 
   public async isomorphicInitialize(

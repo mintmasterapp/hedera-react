@@ -10,7 +10,6 @@ export interface BladeConstructorArgs {
 
 export class Blade extends Connector {
   public provider?: BladeSigner;
-
   private eagerConnection?: Promise<void>;
   private readonly defaultNetwork: Network;
   private readonly dAppCode: string | undefined;
