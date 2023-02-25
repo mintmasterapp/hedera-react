@@ -17,7 +17,7 @@ interface WalletConnectArgs {
 const bridge = "https://bridge.walletconnect.org";
 
 export const URI_AVAILABLE_EVENT = "URI_AVAILABLE";
-export const WALLET_LOAD_EVENT = "WALLET_LOAD_EVENT";
+export const WALLET_CONNECT_EVENT = "WALLET_CONNECT_EVENT";
 export const WALLET_DISCONNECT_EVENT = "WALLET_DISCONNECT_EVENT";
 
 function getRandomInt() {
@@ -70,7 +70,7 @@ export class FlashConnect extends Connector {
     const { accounts, chainId } = payload.params[0];
     const network = parseNetwork(chainId);
     this.actions.update({ network, accounts });
-    this.events.emit(WALLET_LOAD_EVENT, { accounts, network });
+    this.events.emit(WALLET_CONNECT_EVENT, { accounts, network });
     qrcodeModal.close();
   };
 
