@@ -3,7 +3,7 @@
   "keywords": [
     "hedera-react"
   ],
-  "version": "0.2.12",
+  "version": "0.2.13",
   "author": "Nasim Akhtar <devnasim18@gmail.com>",
   "license": "GPL-3.0-or-later",
   "repository": "github:mintmasterapp/hedera-react",
@@ -23,7 +23,7 @@
     "start": "tsc --watch"
   },
   "dependencies": {
-    "@hedera-react/types": "^0.2.2",
+    "@hedera-react/types": "^0.2.3",
     "@walletconnect/client": "^1.8.0",
     "@walletconnect/legacy-utils": "^2.0.0-rc.0",
     "copy-to-clipboard": "3.3.3",

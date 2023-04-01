@@ -3,7 +3,7 @@
   "keywords": [
     "hedera-react"
   ],
-  "version": "0.3.0-alpha.2",
+  "version": "0.3.0",
   "author": "Nasim Akhtar <devnasim18@gmail.com>",
   "license": "GPL-3.0-or-later",
   "repository": "github:mintmasterapp/hedera-react",
@@ -24,6 +24,6 @@
   },
   "dependencies": {
     "@bladelabs/blade-web3.js": "0.9.13",
-    "@hedera-react/types": "^0.2.2"
+    "@hedera-react/types": "^0.2.3"
   }
 }
