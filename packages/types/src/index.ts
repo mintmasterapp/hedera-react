@@ -59,4 +59,6 @@ export abstract class Connector {
   public sendTransaction?(...args: unknown[]): Promise<unknown> | unknown;
 
   public signMessage?(...args: unknown[]): Promise<unknown> | unknown;
+
+  public signTransaction?(...args: unknown[]): Promise<unknown> | unknown;
 }
