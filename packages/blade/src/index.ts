@@ -46,7 +46,7 @@ export class Blade extends Connector {
   }
 
   public async activate(desiredNetwork?: Network): Promise<void> {
-    // const cancelActivation = this.actions.startActivation();
+    const cancelActivation = this.actions.startActivation();
     try {
       await this.isomorphicInitialize();
       await this.provider?.createSession({
@@ -57,7 +57,7 @@ export class Blade extends Connector {
         dAppCode: this.dAppCode,
       });
     } catch (error) {
-      // cancelActivation();
+      cancelActivation();
       throw error;
     }
   }

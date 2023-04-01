@@ -154,4 +154,11 @@ export class HashConnect extends Connector {
   public async signMessage(account: string, message: string): Promise<unknown> {
     return "Not Implemented yet";
   }
+
+  public async signTransaction(
+    account: string,
+    transaction: Buffer
+  ): Promise<unknown> {
+    return "Not Implemented yet";
+  }
 }

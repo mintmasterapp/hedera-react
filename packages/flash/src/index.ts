@@ -201,4 +201,24 @@ export class FlashConnect extends Connector {
     const data = await this.provider?.sendCustomRequest(request);
     return data;
   }
+
+  public async signTransaction(
+    account: string,
+    transaction: Buffer
+  ): Promise<unknown> {
+    const request = {
+      id: getRandomInt(),
+      jsonrpc: "2.0",
+      method: "hedera_signTransaction",
+      params: [
+        {
+          from: account,
+          data: transaction.toString("hex"),
+        },
+      ],
+    };
+    if (isMobile()) window.open("flash://");
+    const data = await this.provider?.sendCustomRequest(request);
+    return data;
+  }
 }
