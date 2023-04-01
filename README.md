@@ -1,118 +1,51 @@
-# `hedera-react` 🧰
+# hedera-react (beta)
 
 _A simple, maximally extensible, dependency minimized framework for building modern [Hedera dApps](https://www.hedera.com/)_
 
-[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+## [Example](https://cra-hedera-react.vercel.app/)
 
-| 🏠 **Core**
-| `@hedera-react/core`
-
-| 🔌 **Connectors**
-`@hedera-react/flash`
+This is a hosted version of [example](/example-next).
 
 ## Installation
 
 ```
-yarn add @hedera-react/core @hedera-react/flash @hedera-react/hashconnect @hedera-react/store 
-
+npm install @hedera-react/types @hedera-react/core @hedera-react/store @hedera-react/flash @hedera-react/hashconnect @hedera-react/blade
 ```
 
-## Initialisation
-
-Following steps are required to integrate flash wallet to your dapp. 
-
-# Create a connector file
+OR
 
 ```
-
-import { initializeConnector } from "@hedera-react/core";
-import { FlashConnect } from "@hedera-react/flash";
-
-export const [flashConnector, hooks] = initializeConnector<FlashConnect>(
-  (actions) =>
-    new FlashConnect({
-      actions,
-      clientMeta: {
-        description: "Flash Wallet Demo",
-        url: "https://flash-demo.vercel.app",
-        icons: ["https://mintmaster.s3.us-east-1.amazonaws.com/flash.png"],
-        name: "Flash Demo",
-      },
-    })
-);
-
+yarn add @hedera-react/types @hedera-react/core @hedera-react/store @hedera-react/flash @hedera-react/hashconnect @hedera-react/blade
 ```
 
-# Usage
+## Packages
 
-Call the flashConnector from connector file in the useEffect of the component
+| Package                                             | Version                                                                                                                 | Size                                                                                                                                               | Link                                       |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| [`@hedera-react/types`](packages/types)             | [![npm](https://img.shields.io/npm/v/@hedera-react/types.svg)](https://www.npmjs.com/package/@hedera-react/types)       | [![minzip](https://img.shields.io/bundlephobia/minzip/@hedera-react/types.svg)](https://bundlephobia.com/result?p=@web3-react/types@beta)          |                                            |
+| [`@hedera-react/store`](packages/store)             | [![npm](https://img.shields.io/npm/v/@hedera-react/store.svg)](https://www.npmjs.com/package/@hedera-react/store)       | [![minzip](https://img.shields.io/bundlephobia/minzip/@hedera-react/store.svg)](https://bundlephobia.com/result?p=@hedra-react/store)              |                                            |
+| [`@web3-react/core`](packages/core)                 | [![npm](https://img.shields.io/npm/v/@web3-react/core/beta.svg)](https://www.npmjs.com/package/@web3-react/core/v/beta) | [![minzip](https://img.shields.io/bundlephobia/minzip/@web3-react/core/beta.svg)](https://bundlephobia.com/result?p=@web3-react/core@beta)         |                                            |
+| **Connectors**                                      |                                                                                                                         |                                                                                                                                                    |                                            |
+| [`@hedera-react/flash`](packages/flash)             | [![npm](https://img.shields.io/npm/v/@hedera-react/flash.svg)](https://www.npmjs.com/package/@hedera-react/flash)       | [![minzip](https://img.shields.io/bundlephobia/minzip/@hedera-react/flash.svg)](https://bundlephobia.com/result?p=@web3-react/eip1193@beta)        | [Flash Wallet](https://flashwallet.app)    |
+| [`@hedera-react/hashconnect`](packages/hashconnect) | [![npm](https://img.shields.io/npm/v/@hedera-react/flash.svg)](https://www.npmjs.com/package/@hedera-react/hashconnect) | [![minzip](https://img.shields.io/bundlephobia/minzip/@hedera-react/hashconnect.svg)](https://bundlephobia.com/result?p=@hedera-react/hashconnect) | [Hashpack Wallet](https://hashpack.app)    |
+| [`@hedera-react/blade`](packages/blade)             | [![npm](https://img.shields.io/npm/v/@hedera-react/blade.svg)](https://www.npmjs.com/package/@hedera-react/blade)       | [![minzip](https://img.shields.io/bundlephobia/minzip/@hedera-react/blade.svg)](https://bundlephobia.com/result?p=@hedera-react/blade)             | [Blade Wallet](https://www.bladewallet.io) |
 
-```
-import { flashConnector } from '../../connectors/flashConnector';
+## Get Started
 
-  useEffect(() => {
-    if (flashConnector.connectEagerly) {
-      flashConnector.connectEagerly().catch(() => {
-        console.debug("Failed to connect eagerly to walletconnect");
-      });
-    }
-  }, []);
-  
+- `yarn`
+- `yarn start`
 
-```
+In addition to compiling each package in watch mode, this will also spin up [packages/example-next](packages/example-next) on [localhost:3000](http://localhost:3000/). But this is just a skeleton app for testing compatibility.
 
-Activating the wallet
+## Run Tests
 
-```
-  <WalletBtn
-    onClick={() => {
-        flashConnector.activate().catch((err: any) => {
-          console.log('err', err);
-        });
-    }}
-  />
+- `yarn build`
+- `yarn test`
 
-```
+## Publish
 
-![image](https://i.ibb.co/L0DxjxJ/flash-wallet-ss.png)
+- `yarn lerna publish`
 
-Disconnecting from the wallet
+## Documentation
 
-```
-<button onClick={() => flashConnector.deactivate()}>Logout</button>
-```
-
-Fetching active state and account
-
-```
-import { hooks } from '../../connectors/flashConnector';
-const { useAccount, useIsActive, chainId, useIsActivating } = hooks;
-const active = useIsActive();
-const account = useAccount();
-const activating = useIsActivating();
-
-
-// Use as
-
- {account && <p className="mt-2 text-green-500">account:{account}</p>}
- {chainId && <p className="mt-2 text-green-500">chainId:{chainId}</p>}
- {activating && <p className="mt-2 text-yellow-500">Connecting...</p>}
-
-```
-
-
-
-## Local Development
-
-- Clone repo\
-  `git clone https://github.com/mintmasterapp/hedera-react.git`
-
-- Install top-level dependencies\
-  `yarn`
-
-- Install sub-dependencies\
-  `yarn bootstrap`
-
-- Build and watch for changes\
-  `yarn start`
+This version of hedera-react is still in beta, so unfortunately documentation is pretty sparse at the moment. [packages/example-next](packages/example-next), TSDoc comments, and the source code itself are the best ways to get an idea of what's going on. More thorough documentation is a priority as development continues!
